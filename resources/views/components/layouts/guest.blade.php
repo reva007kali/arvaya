@@ -12,7 +12,10 @@
     @else
         <title>{{ config('app.name', 'Undangan Pernikahan') }}</title>
     @endif
-    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+
+    {{-- <link rel="icon" href="/favicon.ico" sizes="any"> --}}
+    <link rel="icon" href="/logo.png" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/logo.png">
 
     <!-- Fonts Global (Optional, biasanya tiap tema punya font sendiri) -->
     <!-- Fonts (Sama seperti Landing Page) -->

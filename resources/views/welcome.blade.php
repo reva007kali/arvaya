@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arvaya De Aure - Undangan Pernikahan Digital Eksklusif</title>
-    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    {{-- <link rel="icon" href="/favicon.ico" sizes="any"> --}}
+    <link rel="icon" href="/logo.png" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/logo.png">
 
 
     <!-- FONTS -->
@@ -81,6 +83,10 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -161,13 +167,22 @@
         </div>
 
         <!-- Mobile Menu Overlay -->
-        <div x-show="mobileOpen" x-transition:enter="transition ease-out duration-200"
+        <div x-show="mobileOpen" x-transition:enter="transition ease-out duration-200 " x-cloak
             x-transition:enter-start="opacity-0 -translate-y-5" x-transition:enter-end="opacity-100 translate-y-0"
             class="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-b border-arvaya-200 shadow-xl py-6 px-6 flex flex-col gap-4 text-center">
             <a href="#features" @click="mobileOpen = false" class="py-2 hover:text-arvaya-600">Fitur</a>
             <a href="#themes" @click="mobileOpen = false" class="py-2 hover:text-arvaya-600">Tema</a>
-            <a href="{{ route('login') }}" class="py-2 font-bold">Masuk</a>
-            <a href="{{ route('register') }}" class="py-3 bg-arvaya-500 text-white rounded-lg">Mulai Sekarang</a>
+            @auth
+                <a href="{{ route('dashboard.index') }}"
+                    class="py-2.5 bg-arvaya-500 text-white rounded-full hover:bg-arvaya-600">
+                    Dashboard
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="text-arvaya-800 hover:text-arvaya-600 font-semibold">Login</a>
+                <a href="{{ route('register') }}" class="py-2.5 bg-arvaya-900 text-white rounded-full hover:bg-arvaya-800 ">
+                    Buat Undangan
+                </a>
+            @endauth
         </div>
     </nav>
 
@@ -206,7 +221,7 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="{{ route('register') }}"
+                    <a href="{{ route('dashboard.index') }}"
                         class="px-8 py-4 bg-arvaya-900 text-white rounded-full font-medium hover:bg-arvaya-800 transition shadow-xl hover:shadow-2xl text-center transform hover:-translate-y-1">
                         Buat Undangan
                     </a>
@@ -347,7 +362,7 @@
                     </li>
                 </ul>
 
-                <a href="{{ route('register') }}"
+                <a href="{{ route('dashboard.index') }}"
                     class="inline-block px-8 py-3 border border-arvaya-500 text-arvaya-500 rounded-full hover:bg-arvaya-500 hover:text-white transition">
                     Coba Tema
                 </a>
@@ -437,7 +452,7 @@
                 Aure.
             </p>
 
-            <a href="{{ route('register') }}"
+            <a href="{{ route('dashboard.index') }}"
                 class="inline-block px-10 py-4 bg-arvaya-500 text-white rounded-full text-lg font-bold hover:bg-white hover:text-arvaya-900 transition duration-300 shadow-lg shadow-arvaya-500/50 mb-16 animate-bounce">
                 Buat Undangan Sekarang
             </a>
