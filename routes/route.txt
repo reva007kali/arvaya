@@ -1,0 +1,63 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+// Import Livewire Components
+// Pastikan kamu nanti membuat file component sesuai namespace ini
+use App\Livewire\LandingPage;
+use App\Livewire\Dashboard\Index as DashboardIndex;
+use App\Livewire\Dashboard\Invitation\Create as InvitationCreate;
+use App\Livewire\Dashboard\Invitation\Edit as InvitationEdit;
+use App\Livewire\Dashboard\Guest\Index as GuestManager;
+use App\Livewire\Dashboard\Message\Index as MessageManager;
+use App\Livewire\Frontend\ShowInvitation;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// 1. LANDING PAGE UTAMA (Halaman depan aplikasi SaaS kamu)
+Route::get('/', LandingPage::class)->name('home');
+
+// 2. AUTHENTICATION (Bawaan Laravel Breeze/Jetstream)
+// File ini biasanya berisi route login, register, logout
+require __DIR__.'/auth.php';
+
+// 3. DASHBOARD USER (Area Tertutup / Protected)
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
+
+    // Halaman Utama Dashboard: Menampilkan List Undangan Saya
+    Route::get('/', DashboardIndex::class)->name('index');
+
+    // Buat Undangan Baru
+    Route::get('/create', InvitationCreate::class)->name('create');
+
+    // Grouping berdasarkan ID Undangan (Route Model Binding)
+    // URL: /dashboard/1/edit, /dashboard/1/guests
+    Route::prefix('{invitation}')->group(function () {
+        
+        // Edit Detail Undangan (Pengantin, Acara, Tema, Foto)
+        // Kita bisa buat satu halaman panjang atau tabulasi di dalam component ini
+        Route::get('/edit', InvitationEdit::class)->name('invitation.edit');
+
+        // Manajemen Tamu (List, Tambah, Hapus, Kirim WA)
+        Route::get('/guests', GuestManager::class)->name('guests.index');
+
+        // Manajemen Pesan / Ucapan (Lihat, Reply, Hapus)
+        Route::get('/messages', MessageManager::class)->name('messages.index');
+        
+    });
+
+});
+
+// 4. FRONTEND UNDANGAN (Area Publik)
+// Hati-hati: Letakkan ini PALING BAWAH agar tidak bentrok dengan route lain.
+
+// URL: domain.com/reza-adinda
+// Parameter tamu (?to=bapak-budi) ditangani via Query String, bukan route parameter,
+// jadi tidak perlu didefinisikan di sini.
+Route::get('/{slug}', ShowInvitation::class)
+    ->where('slug', '[a-zA-Z0-9\-]+') // Validasi slug hanya boleh huruf, angka, strip
+    ->name('invitation.show');
