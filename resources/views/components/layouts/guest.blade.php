@@ -14,8 +14,12 @@
     @endif
 
     <!-- Fonts Global (Optional, biasanya tiap tema punya font sendiri) -->
+    <!-- Fonts (Sama seperti Landing Page) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome (Wajib untuk icon sosmed/navigasi di undangan) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -43,6 +47,14 @@
 
     {{-- Slot untuk script tambahan spesifik tema (misal: animasi AOS/GSAP) --}}
     {{ $scripts ?? '' }}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: false,
+            offset: 50,
+        });
+    </script>
 </body>
 
 </html>

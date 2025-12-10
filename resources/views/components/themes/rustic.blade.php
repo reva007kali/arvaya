@@ -1,124 +1,330 @@
 @props(['invitation', 'guest'])
 
 @php
+    // Helper data
     $groom = $invitation->couple_data['groom'] ?? [];
     $bride = $invitation->couple_data['bride'] ?? [];
-    $theme = $invitation->theme_config ?? [];
     $gifts = $invitation->gifts_data ?? [];
-    $coverImage = $invitation->gallery_data[0] ?? null;
+
+    // PERBAIKAN DISINI:
+    // Gunakan '?? []' agar jika null dia menjadi array kosong, sehingga tidak error saat diakses key-nya
+    $theme = $invitation->theme_config ?? [];
+
+    // Ambil foto pertama atau placeholder
+    $coverImage = $invitation->gallery_data[0] ?? 'https://via.placeholder.com/1080x1920?text=Wedding';
 @endphp
 
-<!-- Import Font Rustic (Playfair Display & Dancing Script) -->
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
-    
-    .font-script { font-family: 'Dancing Script', cursive; }
-    .font-serif { font-family: 'Playfair Display', serif; }
-    
-    .bg-paper {
-        background-color: #fdfbf7;
-        background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4c5a0' fill-opacity='0.2' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
-    }
-</style>
+<div class="font-sans text-gray-800 bg-gray-50 min-h-screen pb-20">
 
-<div class="font-serif text-[#5a4a42] bg-paper min-h-screen pb-20 overflow-x-hidden">
+    {{-- CSS Custom --}}
+    <style>
+        .theme-text {
+            color: {{ data_get($theme, 'primary_color', '#d4af37') }};
+        }
 
-    {{-- COVER --}}
-    <section class="min-h-screen flex flex-col justify-center items-center text-center p-6 relative">
-        {{-- Ornamen Bunga (Bisa pakai img tag dengan absolute position di pojok) --}}
-        
-        <div class="border-2 border-[#8c7b70] p-8 md:p-12 relative z-10 max-w-lg w-full bg-white/50 backdrop-blur-sm shadow-xl" data-aos="zoom-in">
-            <p class="uppercase tracking-[0.2em] text-xs mb-6">The Wedding Of</p>
-            
-            <h1 class="font-script text-5xl md:text-6xl mb-2 text-[#8c7b70]">
-                {{ $groom['nickname'] ?? 'Groom' }}
+        .theme-bg {
+            background-color: {{ data_get($theme, 'primary_color', '#d4af37') }};
+        }
+
+        /* Hover effect */
+        .theme-btn:hover {
+            background-color: {{ data_get($theme, 'primary_color', '#d4af37') }};
+        }
+    </style>
+
+
+    {{-- COVER SECTION --}}
+    <section class="relative h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden">
+        {{-- Background Image --}}
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset($coverImage) }}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        {{-- Content --}}
+        <div class="relative z-10 text-white animate-fade-in-up">
+            <p class="uppercase tracking-widest text-sm mb-4">The Wedding of</p>
+            <h1 class="font-serif text-5xl md:text-7xl font-bold mb-4">
+                {{ $groom['nickname'] }} <span class="text-yellow-400">&</span> {{ $bride['nickname'] }}
             </h1>
-            <span class="font-script text-3xl text-[#bcaaa4]">&</span>
-            <h1 class="font-script text-5xl md:text-6xl mt-2 mb-8 text-[#8c7b70]">
-                {{ $bride['nickname'] ?? 'Bride' }}
-            </h1>
-
-            <p class="text-lg italic border-t border-b border-[#8c7b70] py-4 inline-block px-8 mb-8">
-                {{ \Carbon\Carbon::parse($invitation->event_data[0]['date'] ?? now())->format('d . m . Y') }}
+            <p class="text-lg mb-8">{{ \Carbon\Carbon::parse($invitation->event_data[0]['date'])->format('d . m . Y') }}
             </p>
 
-            @if($guest)
-                <div class="mt-4">
-                    <p class="text-xs italic mb-1">Special Guest:</p>
-                    <h3 class="text-xl font-bold">{{ $guest->name }}</h3>
+            @if ($guest)
+                <div
+                    class="bg-white/20 backdrop-blur-sm p-4 rounded-xl border border-white/30 inline-block animate-bounce">
+                    <p class="text-xs mb-1">Kepada Yth:</p>
+                    <p class="font-bold text-xl">{{ $guest->name }}</p>
                 </div>
             @endif
+
+            <div class="mt-12" x-data>
+                <a href="#couple" @click="$dispatch('play-music')"
+                    class="px-6 py-2 border border-white rounded-full hover:bg-white hover:text-black transition">
+                    Buka Undangan
+                </a>
+            </div>
         </div>
     </section>
 
-    {{-- COUPLE --}}
-    <section class="py-20 px-6 container mx-auto text-center">
-        <img src="https://ui-avatars.com/api/?name={{ $groom['nickname'] }}+{{ $bride['nickname'] }}&background=8c7b70&color=fff&size=128" 
-             class="w-32 h-32 rounded-full mx-auto border-4 border-white shadow-lg mb-8">
-             
-        <p class="max-w-xl mx-auto italic mb-12 text-sm leading-loose">
-            "{{ $invitation->couple_data['quote'] ?? 'Mencintai bukan hanya saling memandang, tetapi melihat ke arah yang sama.' }}"
+    {{-- MEMPELAI SECTION --}}
+    <section id="couple" class="py-20 container mx-auto px-6 text-center">
+        <p class="italic text-gray-500 mb-6 max-w-2xl mx-auto">
+            "{{ $invitation->couple_data['quote'] ?? 'Tanpa mengurangi rasa hormat, kami bermaksud mengundang Bapak/Ibu/Saudara/i...' }}"
         </p>
+
+        <div class="grid md:grid-cols-2 gap-10 items-center mt-12">
+            {{-- Pria --}}
+            <div class="order-2 md:order-1">
+                <h3 class="font-serif text-4xl theme-text font-bold mb-2">{{ $groom['fullname'] }}</h3>
+                <p class="text-gray-500 mb-2">Putra dari Bpk. {{ $groom['father'] }} & Ibu {{ $groom['mother'] }}</p>
+                <a href="https://instagram.com/{{ $groom['instagram'] }}"
+                    class="text-sm text-gray-400 hover:text-pink-600">
+                    <i class="fa-brands fa-instagram"></i> {{ $groom['instagram'] }}
+                </a>
+            </div>
+
+            {{-- Wanita --}}
+            <div class="order-1 md:order-2">
+                <h3 class="font-serif text-4xl theme-text font-bold mb-2">{{ $bride['fullname'] }}</h3>
+                <p class="text-gray-500 mb-2">Putri dari Bpk. {{ $bride['father'] }} & Ibu {{ $bride['mother'] }}</p>
+                <a href="https://instagram.com/{{ $bride['instagram'] }}"
+                    class="text-sm text-gray-400 hover:text-pink-600">
+                    <i class="fa-brands fa-instagram"></i> {{ $bride['instagram'] }}
+                </a>
+            </div>
+        </div>
     </section>
 
-    {{-- EVENTS (Timeline Style) --}}
-    <section class="py-20 bg-[#f3efe8]">
-        <div class="container mx-auto px-6 max-w-3xl">
-            <h2 class="font-script text-4xl text-center mb-12">Save The Date</h2>
-            
-            <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
-                @foreach($invitation->event_data as $event)
-                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                        <!-- Icon -->
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-300 group-[.is-active]:bg-[#8c7b70] text-slate-500 group-[.is-active]:text-100 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                            <i class="fa-solid fa-heart text-white text-xs"></i>
+    {{-- ACARA SECTION --}}
+    <section class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="font-serif text-3xl text-center font-bold mb-12 theme-text">Rangkaian Acara</h2>
+
+            <div
+                class="grid grid-cols-1 md:grid-cols-{{ count($invitation->event_data) > 2 ? 3 : 2 }} gap-6 justify-center">
+                @foreach ($invitation->event_data as $event)
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-sm text-center transform hover:-translate-y-2 transition duration-300">
+                        <h3 class="font-bold text-xl mb-4 text-gray-800">{{ $event['title'] }}</h3>
+
+                        <div class="flex items-center justify-center gap-2 text-gray-600 mb-4">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span>{{ \Carbon\Carbon::parse($event['date'])->translatedFormat('l, d F Y') }}</span>
                         </div>
-                        
-                        <!-- Card -->
-                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-4 rounded border border-slate-200 shadow">
-                            <h3 class="font-bold text-lg mb-1">{{ $event['title'] }}</h3>
-                            <time class="block mb-2 text-xs font-medium uppercase text-gray-500">
-                                {{ \Carbon\Carbon::parse($event['date'])->translatedFormat('l, d F Y - H:i') }}
-                            </time>
-                            <p class="text-sm text-gray-600">{{ $event['location'] }}</p>
-                            @if(!empty($event['map_link']))
-                                <a href="{{ $event['map_link'] }}" class="text-xs text-[#8c7b70] underline mt-2 inline-block">View Map</a>
-                            @endif
+                        <div class="flex items-center justify-center gap-2 text-gray-600 mb-6">
+                            <i class="fa-regular fa-clock"></i>
+                            <span>{{ \Carbon\Carbon::parse($event['date'])->format('H:i') }} WIB</span>
                         </div>
+
+                        <p class="font-semibold text-gray-800 mb-1">{{ $event['location'] }}</p>
+                        <p class="text-sm text-gray-500 mb-6">{{ $event['address'] }}</p>
+
+                        @if (!empty($event['map_link']))
+                            <a href="{{ $event['map_link'] }}" target="_blank"
+                                class="px-6 py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-gray-700">
+                                <i class="fa-solid fa-location-dot mr-1"></i> Google Maps
+                            </a>
+                        @endif
                     </div>
                 @endforeach
             </div>
         </div>
     </section>
 
-    {{-- WIDGETS (RSVP & GUESTBOOK) --}}
-    <section class="py-20 px-6 container mx-auto max-w-4xl">
-        <div class="bg-white p-8 shadow-xl rounded-sm border-t-8 border-[#8c7b70]">
-            @livewire('frontend.rsvp-form', ['invitation' => $invitation, 'guest' => $guest])
-            
-            <div class="my-12 h-px bg-gray-200"></div>
-            
-            @livewire('frontend.guest-book', ['invitation' => $invitation, 'guest' => $guest])
+    {{-- GALERI SECTION --}}
+    @if (!empty($invitation->gallery_data))
+        <section class="py-20 container mx-auto px-6">
+            <h2 class="font-serif text-3xl text-center font-bold mb-12 theme-text">Galeri Kebahagiaan</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                @foreach ($invitation->gallery_data as $photo)
+                    <img src="{{ asset($photo) }}"
+                        class="w-full h-64 object-cover rounded-lg shadow-sm hover:opacity-90 transition cursor-pointer">
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    {{-- RSVP & GUESTBOOK WRAPPER --}}
+    <section class="py-20 bg-gradient-to-b from-white to-pink-50">
+        <div class="container mx-auto px-6 max-w-4xl">
+
+            {{-- RSVP Widget --}}
+            <div class="mb-16">
+                @livewire('frontend.rsvp-form', ['invitation' => $invitation, 'guest' => $guest])
+            </div>
+
+            <hr class="border-gray-200 mb-16">
+
+            {{-- GuestBook Widget --}}
+            <div>
+                @livewire('frontend.guest-book', ['invitation' => $invitation, 'guest' => $guest])
+            </div>
+
         </div>
     </section>
 
-    {{-- GIFT --}}
-    @if(!empty($gifts))
-        <section class="py-12 text-center">
-            <h2 class="font-script text-3xl mb-6">Wedding Gift</h2>
-            <div class="flex flex-wrap justify-center gap-4">
-                @foreach($gifts as $gift)
-                    <div class="bg-white border border-[#8c7b70] px-6 py-4 rounded shadow-sm">
-                        <p class="font-bold">{{ $gift['bank_name'] }}</p>
-                        <p class="font-mono text-lg">{{ $gift['account_number'] }}</p>
-                        <p class="text-xs">a.n {{ $gift['account_name'] }}</p>
+    {{-- GIFT SECTION --}}
+    @if (!empty($invitation->gifts_data))
+        <section class="py-20 bg-gray-50 container mx-auto px-6 text-center">
+            <h2 class="font-serif text-3xl font-bold mb-4 theme-text">Tanda Kasih</h2>
+            <p class="text-gray-500 mb-8 max-w-lg mx-auto text-sm">
+                Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika memberi adalah ungkapan tanda
+                kasih Anda, kami menerima kado secara cashless.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center max-w-4xl mx-auto">
+                @foreach ($invitation->gifts_data as $gift)
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center">
+                        {{-- Icon Bank Sederhana --}}
+                        <div class="font-bold text-xl mb-2 text-gray-800">{{ $gift['bank_name'] }}</div>
+
+                        <div class="text-lg font-mono text-gray-600 mb-1 select-all">{{ $gift['account_number'] }}
+                        </div>
+                        <div class="text-sm text-gray-400 mb-4">a.n {{ $gift['account_name'] }}</div>
+
+                        <button
+                            onclick="navigator.clipboard.writeText('{{ $gift['account_number'] }}'); alert('No Rekening Disalin!');"
+                            class="px-4 py-1 border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-100 transition">
+                            <i class="fa-regular fa-copy mr-1"></i> Salin Nomor
+                        </button>
                     </div>
                 @endforeach
             </div>
         </section>
     @endif
-    
+
+    {{-- FOOTER --}}
     <footer class="bg-[#5a4a42] text-[#f3efe8] py-8 text-center text-xs">
         <p>&copy; {{ date('Y') }} {{ $groom['nickname'] ?? 'Groom' }} & {{ $bride['nickname'] ?? 'Bride' }}</p>
     </footer>
+
+    {{-- MUSIC PLAYER (YOUTUBE VERSION - AUTOPLAY READY) --}}
+    @if (!empty($theme['music_url']))
+        {{-- Container Player --}}
+        <div x-data="youtubePlayer('{{ $theme['music_url'] }}')" x-init="initPlayer()" @play-music.window="playMusic()"
+            class="fixed bottom-4 left-4 z-50 font-sans">
+
+            {{-- POPUP CONTROLS (Tetap sama seperti sebelumnya) --}}
+            <div x-show="isOpen" x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4"
+                class="mb-4 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-2xl border border-white/50 w-64"
+                style="display: none;"> {{-- Tambah display none agar tidak kedip saat load --}}
+
+                {{-- Bagian Atas: Controls --}}
+                <div class="flex items-center justify-between mb-3 text-pink-600">
+                    <button @click="seek(-10)" class="hover:text-pink-800 transition"><i
+                            class="fa-solid fa-backward-step text-lg"></i></button>
+                    <button @click="togglePlay"
+                        class="w-10 h-10 bg-pink-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-pink-700 transition">
+                        <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play pl-1'"></i>
+                    </button>
+                    <button @click="seek(10)" class="hover:text-pink-800 transition"><i
+                            class="fa-solid fa-forward-step text-lg"></i></button>
+                </div>
+
+                {{-- Bagian Bawah: Mini Youtube Player --}}
+                <div class="relative w-full rounded-lg overflow-hidden bg-black aspect-video border border-gray-200">
+                    <div id="yt-player-container"></div>
+                    <div class="absolute inset-0 bg-transparent"></div>
+                </div>
+                <p class="text-[10px] text-gray-400 text-center mt-1">Audio Source: YouTube</p>
+            </div>
+
+            {{-- MAIN FLOATING BUTTON (Tetap sama) --}}
+            <button @click="isOpen = !isOpen"
+                class="w-10 h-10 bg-white/80 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-pink-600 border border-white hover:bg-white transition animate-bounce-slow">
+                <template x-if="!isOpen && isPlaying">
+                    <i class="fa-solid fa-compact-disc fa-spin text-lg"></i>
+                </template>
+                <template x-if="isOpen || !isPlaying">
+                    <i class="fa-solid fa-music text-lg"></i>
+                </template>
+            </button>
+        </div>
+
+        {{-- SCRIPT UPDATE --}}
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('youtubePlayer', (url) => ({
+                    player: null,
+                    isPlaying: false,
+                    isOpen: false,
+                    videoId: '',
+
+                    initPlayer() {
+                        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                        const match = url.match(regExp);
+                        this.videoId = (match && match[2].length === 11) ? match[2] : null;
+
+                        if (!this.videoId) return;
+
+                        if (!window.YT) {
+                            const tag = document.createElement('script');
+                            tag.src = "https://www.youtube.com/iframe_api";
+                            const firstScriptTag = document.getElementsByTagName('script')[0];
+                            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+                            window.onYouTubeIframeAPIReady = () => this.createPlayer();
+                        } else {
+                            this.createPlayer();
+                        }
+                    },
+
+                    createPlayer() {
+                        this.player = new YT.Player('yt-player-container', {
+                            height: '100%',
+                            width: '100%',
+                            videoId: this.videoId,
+                            playerVars: {
+                                'autoplay': 1, // Coba autoplay (Works on some desktop)
+                                'playsinline': 1,
+                                'controls': 0,
+                                'loop': 1,
+                                'playlist': this.videoId
+                            },
+                            events: {
+                                'onReady': (event) => {
+                                    // Usaha pertama: Play langsung saat siap
+                                    event.target.playVideo();
+                                },
+                                'onStateChange': (event) => {
+                                    this.isPlaying = (event.data === YT.PlayerState.PLAYING);
+                                }
+                            }
+                        });
+                    },
+
+                    // Fungsi ini dipanggil oleh Tombol "Buka Undangan"
+                    playMusic() {
+                        if (this.player && typeof this.player.playVideo === 'function') {
+                            this.player.playVideo();
+                            this.isPlaying = true;
+                        }
+                    },
+
+                    togglePlay() {
+                        if (!this.player) return;
+                        this.isPlaying ? this.player.pauseVideo() : this.player.playVideo();
+                    },
+
+                    seek(seconds) {
+                        if (!this.player) return;
+                        this.player.seekTo(this.player.getCurrentTime() + seconds, true);
+                    }
+                }));
+            });
+        </script>
+    @endif
+
 </div>
+
+@section('scripts')
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+        });
+    </script>
+@endsection

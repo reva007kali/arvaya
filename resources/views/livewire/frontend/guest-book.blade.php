@@ -1,58 +1,104 @@
-<div class="max-w-3xl mx-auto">
-    {{-- Form Kirim Ucapan --}}
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
-        <h3 class="font-serif text-xl font-bold mb-4 text-center">Kirim Doa & Ucapan</h3>
+<div class="max-w-3xl mx-auto relative z-10">
+    
+    {{-- FORM KIRIM UCAPAN --}}
+    <div class="bg-white p-8 rounded-3xl shadow-[0_10px_40px_-10px_rgba(184,151,96,0.15)] border border-[#E6D9B8] mb-12 relative overflow-hidden group">
+        
+        {{-- Hiasan Sudut --}}
+        <div class="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#E6D9B8] rounded-tl-3xl opacity-50"></div>
+        <div class="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#E6D9B8] rounded-br-3xl opacity-50"></div>
 
-        <form wire:submit="sendMessage" class="space-y-4">
+        <h3 class="font-serif text-2xl font-bold mb-2 text-center text-[#5E4926]">Kirim Doa & Ucapan</h3>
+        <p class="text-center text-[#9A7D4C] text-sm mb-6 italic font-serif">"Doa restu Anda adalah kado terindah bagi kami"</p>
+
+        <form wire:submit="sendMessage" class="space-y-5 relative z-10">
             <div>
-                <input type="text" wire:model="sender_name"
-                    class="w-full rounded-lg border-gray-300 focus:border-pink-500" placeholder="Nama Anda"
-                    {{ $guest ? 'readonly' : '' }}>
+                <label class="block text-xs font-bold text-[#7C6339] uppercase tracking-wider mb-1.5 ml-1">Nama Anda</label>
+                <div class="relative">
+                    <input type="text" wire:model="sender_name" 
+                        class="w-full pl-4 pr-4 py-3 rounded-xl bg-[#F9F7F2] border-[#E6D9B8] text-[#5E4926] placeholder-[#C6AC80] focus:border-[#B89760] focus:ring-1 focus:ring-[#B89760] transition-all text-sm font-medium" 
+                        placeholder="Tulis nama lengkap..." 
+                        {{ $guest ? 'readonly' : '' }}>
+                    @if($guest)
+                        <div class="absolute right-3 top-3 text-[#B89760]" title="Terisi Otomatis dari Undangan">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                    @endif
+                </div>
             </div>
+
             <div>
-                <textarea wire:model="content" rows="3" class="w-full rounded-lg border-gray-300 focus:border-pink-500"
-                    placeholder="Tuliskan doa restu Anda..."></textarea>
-                @error('content')
-                    <span class="text-xs text-red-500">{{ $message }}</span>
-                @enderror
+                <label class="block text-xs font-bold text-[#7C6339] uppercase tracking-wider mb-1.5 ml-1">Ucapan & Doa</label>
+                <textarea wire:model="content" rows="3" 
+                    class="w-full p-4 rounded-xl bg-[#F9F7F2] border-[#E6D9B8] text-[#5E4926] placeholder-[#C6AC80] focus:border-[#B89760] focus:ring-1 focus:ring-[#B89760] transition-all text-sm resize-none"
+                    placeholder="Tuliskan harapan dan doa restu untuk kedua mempelai..."></textarea>
+                @error('content') <span class="text-xs text-red-500 mt-1 block ml-1">{{ $message }}</span> @enderror
             </div>
+
             <div class="text-right">
-                <button type="submit"
-                    class="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-medium">
-                    <span wire:loading.remove>Kirim Ucapan</span>
-                    <span wire:loading>...</span>
+                <button type="submit" 
+                    class="px-8 py-3 bg-[#5E4926] text-white rounded-full font-bold shadow-lg shadow-[#5E4926]/20 hover:bg-[#403013] hover:shadow-xl transition transform hover:-translate-y-0.5 text-sm flex items-center gap-2 ml-auto">
+                    <span wire:loading.remove>Kirim Ucapan <i class="fa-solid fa-paper-plane ml-1"></i></span>
+                    <span wire:loading><i class="fa-solid fa-circle-notch fa-spin"></i> Mengirim...</span>
                 </button>
             </div>
+
             @if (session('msg_status'))
-                <p class="text-sm text-green-600 text-center">{{ session('msg_status') }}</p>
+                <div class="mt-4 p-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl text-center flex items-center justify-center gap-2 animate-pulse">
+                    <i class="fa-solid fa-circle-check"></i> {{ session('msg_status') }}
+                </div>
             @endif
         </form>
     </div>
 
-    {{-- List Ucapan --}}
-    <div class="space-y-4">
-        @foreach ($messages as $msg)
-            <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-pink-400">
-                <div class="flex justify-between items-start mb-2">
-                    <h4 class="font-bold text-gray-800">{{ $msg->sender_name }}</h4>
-                    <span class="text-xs text-gray-400">{{ $msg->created_at->diffForHumans() }}</span>
-                </div>
-                <p class="text-gray-600 text-sm">{{ $msg->content }}</p>
+    {{-- LIST UCAPAN --}}
+    <div class="space-y-6">
+        <h4 class="font-serif font-bold text-xl text-[#5E4926] mb-4 text-center border-b border-[#E6D9B8] pb-4 mx-auto w-1/2">
+            {{ $messages->total() }} Doa Terkumpul
+        </h4>
 
-                {{-- Balasan Mempelai (Reply) --}}
-                @foreach ($msg->replies as $reply)
-                    <div class="mt-3 ml-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <div class="flex items-center gap-2 mb-1">
-                            <i class="fa-solid fa-crown text-yellow-500 text-xs"></i>
-                            <span class="text-xs font-bold text-gray-900">Mempelai</span>
-                        </div>
-                        <p class="text-xs text-gray-600">{{ $reply->content }}</p>
+        @foreach($messages as $msg)
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-[#E6D9B8]/60 relative transition hover:shadow-md">
+                
+                {{-- Quote Icon Dekorasi --}}
+                <i class="fa-solid fa-quote-right absolute top-6 right-6 text-[#F2ECDC] text-4xl -z-0"></i>
+
+                <div class="flex gap-4 relative z-10">
+                    {{-- Avatar Inisial --}}
+                    <div class="w-10 h-10 rounded-full bg-[#F2ECDC] border border-[#E6D9B8] flex items-center justify-center text-[#B89760] font-serif font-bold text-lg shrink-0">
+                        {{ substr($msg->sender_name, 0, 1) }}
                     </div>
-                @endforeach
+
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-[#5E4926] font-serif text-lg">{{ $msg->sender_name }}</h4>
+                            <span class="text-[10px] uppercase tracking-wider text-[#9A7D4C] bg-[#F9F7F2] px-2 py-1 rounded-full">
+                                {{ $msg->created_at->diffForHumans() }}
+                            </span>
+                        </div>
+                        
+                        <p class="text-[#7C6339] text-sm leading-relaxed mb-4 font-medium">
+                            {{ $msg->content }}
+                        </p>
+
+                        {{-- Balasan Mempelai (Reply) --}}
+                        @foreach($msg->replies as $reply)
+                            <div class="mt-4 bg-[#F9F7F2] p-4 rounded-xl border border-[#E6D9B8] relative">
+                                {{-- Icon Crown --}}
+                                <div class="absolute -top-3 -left-2 bg-[#B89760] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                                    <i class="fa-solid fa-crown"></i> Mempelai
+                                </div>
+                                
+                                <p class="text-xs text-[#5E4926] mt-1 leading-relaxed italic">
+                                    "{{ $reply->content }}"
+                                </p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         @endforeach
 
-        <div class="pt-4">
+        <div class="pt-6 flex justify-center">
             {{ $messages->links() }}
         </div>
     </div>

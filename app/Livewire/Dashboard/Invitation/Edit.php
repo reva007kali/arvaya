@@ -3,9 +3,10 @@
 namespace App\Livewire\Dashboard\Invitation;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Layout;
 use App\Models\Invitation;
+use Livewire\WithFileUploads;
+use App\Services\OpenAIService;
+use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Storage;
 
 class Edit extends Component
@@ -27,6 +28,10 @@ class Edit extends Component
     // Uploads
     public $newGalleryImages = [];
     public $existingGallery = [];
+
+    // Properti baru untuk loading state AI
+    public $isGeneratingAi = false;
+    public $aiTone = 'islami'; // Pilihan tone
 
     protected function rules()
     {
@@ -78,6 +83,31 @@ class Edit extends Component
         // 5. Load Others
         $this->existingGallery = $invitation->gallery_data ?? [];
         $this->gifts = $invitation->gifts_data ?? [];
+    }
+
+    // --- TAMBAHKAN METHOD INI ---
+    public function generateQuote()
+    {
+        // 1. Ambil nama pengantin
+        $groom = $this->couple['groom']['nickname'] ?? 'Mempelai Pria';
+        $bride = $this->couple['bride']['nickname'] ?? 'Mempelai Wanita';
+
+        if (empty($groom) || empty($bride)) {
+            $this->dispatch('notify', message: 'Isi nama panggilan dulu ya!', type: 'error');
+            return;
+        }
+
+        $this->isGeneratingAi = true;
+
+        // 2. Panggil Service
+        // Pastikan Service diimport di atas: use App\Services\OpenAIService;
+        $result = OpenAIService::generateWeddingQuote($groom, $bride, $this->aiTone);
+
+        // 3. Masukkan hasil ke form
+        $this->couple['quote'] = $result;
+
+        $this->isGeneratingAi = false;
+        $this->dispatch('notify', message: 'Kata-kata berhasil dibuat AI!', type: 'success');
     }
 
     public function render()

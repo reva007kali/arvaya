@@ -1,124 +1,212 @@
-<div class="py-6">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+<div class="py-2 animate-fade-in-up">
+    
+    {{-- HEADER SECTION --}}
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
         <div>
-            <h2 class="font-bold text-xl text-gray-800">Manajemen Tamu</h2>
-            <p class="text-sm text-gray-500">Undangan: {{ $invitation->title }}</p>
+            <div class="flex items-center gap-2 text-[#9A7D4C] text-xs font-bold uppercase tracking-widest mb-1">
+                <a href="{{ route('dashboard.index') }}" class="hover:text-[#5E4926] transition flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Dashboard
+                </a>
+                <span>/</span>
+                <span>Management</span>
+            </div>
+            <h2 class="font-serif font-bold text-3xl text-[#5E4926]">Buku Tamu Eksklusif</h2>
+            <p class="text-[#7C6339] text-sm mt-1">Undangan: <span class="font-semibold italic">{{ $invitation->title }}</span></p>
         </div>
-        <a href="{{ route('dashboard.index') }}" class="text-sm text-gray-600 hover:underline">
-            <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
-        </a>
+
+        {{-- Quick Stats (Ringkasan Kecil) --}}
+        <div class="flex gap-3">
+            <div class="bg-white border border-[#E6D9B8] px-4 py-2 rounded-xl shadow-sm text-center">
+                <p class="text-[10px] text-[#9A7D4C] font-bold uppercase">Total</p>
+                <p class="text-lg font-serif font-bold text-[#5E4926]">{{ $guests->total() }}</p>
+            </div>
+            <div class="bg-white border border-[#E6D9B8] px-4 py-2 rounded-xl shadow-sm text-center">
+                <p class="text-[10px] text-[#9A7D4C] font-bold uppercase">Hadir</p>
+                <p class="text-lg font-serif font-bold text-green-600">
+                    {{ $invitation->guests()->where('rsvp_status', 1)->count() }}
+                </p>
+            </div>
+        </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {{-- FORM TAMBAH TAMU --}}
+        {{-- LEFT COLUMN: FORM INPUT --}}
         <div class="lg:col-span-1">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-6">
-                <h3 class="font-bold text-lg mb-4 text-gray-800">Tambah Tamu</h3>
-                <form wire:submit="save" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Nama Tamu</label>
-                        <input type="text" wire:model="name" placeholder="Contoh: Bpk. Budi & Keluarga" class="w-full rounded-lg border-gray-300 focus:border-pink-500 text-sm">
-                        @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            <div class="bg-white p-6 rounded-2xl shadow-[0_4px_20px_rgb(230,217,184,0.2)] border border-[#E6D9B8]/60 sticky top-24">
+                <div class="flex items-center gap-3 mb-6 border-b border-[#F2ECDC] pb-4">
+                    <div class="w-8 h-8 rounded-full bg-[#F2ECDC] flex items-center justify-center text-[#B89760]">
+                        <i class="fa-solid fa-user-plus text-sm"></i>
                     </div>
+                    <h3 class="font-serif font-bold text-lg text-[#5E4926]">Tambah Tamu</h3>
+                </div>
+
+                <form wire:submit="save" class="space-y-5">
+                    {{-- Nama --}}
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">No. WhatsApp (Opsional)</label>
-                        <input type="number" wire:model="phone" placeholder="0812..." class="w-full rounded-lg border-gray-300 focus:border-pink-500 text-sm">
-                        <p class="text-[10px] text-gray-400 mt-1">Digunakan untuk tombol kirim otomatis.</p>
+                        <label class="block text-xs font-bold text-[#7C6339] uppercase tracking-wider mb-1.5">Nama Tamu</label>
+                        <input type="text" wire:model="name" placeholder="Contoh: Bpk. Budi & Keluarga" 
+                               class="w-full rounded-lg bg-[#F9F7F2] border-[#E6D9B8] text-[#5E4926] placeholder-[#C6AC80] focus:border-[#B89760] focus:ring-[#B89760] text-sm transition shadow-sm">
+                        @error('name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                     </div>
+
+                    {{-- WhatsApp --}}
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Kategori</label>
-                        <select wire:model="category" class="w-full rounded-lg border-gray-300 text-sm">
-                            <option value="Keluarga">Keluarga</option>
-                            <option value="Teman Kantor">Teman Kantor</option>
-                            <option value="Teman Sekolah">Teman Sekolah</option>
-                            <option value="VIP">VIP</option>
-                        </select>
+                        <label class="block text-xs font-bold text-[#7C6339] uppercase tracking-wider mb-1.5">WhatsApp <span class="text-[#C6AC80] font-normal normal-case">(Opsional)</span></label>
+                        <div class="relative">
+                            <span class="absolute hidden inset-y-0 left-0 pl-3 md:flex items-center pointer-events-none">
+                                <i class="fa-brands fa-whatsapp text-green-500/60"></i>
+                            </span>
+                            <input type="number" wire:model="phone" placeholder="0812..." 
+                                   class="w-full pl-9 rounded-lg bg-[#F9F7F2] border-[#E6D9B8] text-[#5E4926] placeholder-[#C6AC80] focus:border-[#B89760] focus:ring-[#B89760] text-sm transition shadow-sm">
+                        </div>
+                        <p class="text-[10px] text-[#9A7D4C] mt-1.5 italic">*Nomor HP diperlukan untuk fitur kirim undangan otomatis.</p>
                     </div>
-                    <button type="submit" class="w-full py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-black transition">
-                        <i class="fa-solid fa-plus mr-1"></i> Simpan Tamu
+
+                    {{-- Kategori --}}
+                    <div>
+                        <label class="block text-xs font-bold text-[#7C6339] uppercase tracking-wider mb-1.5">Kategori</label>
+                        <div class="relative">
+                            <select wire:model="category" class="w-full appearance-none rounded-lg bg-[#F9F7F2] border-[#E6D9B8] text-[#5E4926] focus:border-[#B89760] focus:ring-[#B89760] text-sm transition shadow-sm">
+                                <option value="Keluarga">Keluarga</option>
+                                <option value="Teman Kantor">Teman Kantor</option>
+                                <option value="Teman Sekolah">Teman Sekolah</option>
+                                <option value="VIP">VIP</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#9A7D4C]">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Button --}}
+                    <button type="submit" class="w-full py-3 bg-[#5E4926] text-white rounded-lg text-sm font-bold hover:bg-[#403013] transition shadow-lg shadow-[#5E4926]/20 flex items-center justify-center gap-2 group">
+                        <i class="fa-solid fa-plus group-hover:rotate-90 transition duration-300"></i> Simpan Data
                     </button>
                 </form>
             </div>
         </div>
 
-        {{-- LIST TAMU & TOMBOL WA --}}
+        {{-- RIGHT COLUMN: GUEST LIST --}}
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
-                    <h3 class="font-bold text-gray-700">Daftar Tamu</h3>
-                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama..." class="text-xs rounded-full border-gray-300 px-4 py-1">
+            <div class="bg-white rounded-2xl shadow-[0_4px_20px_rgb(230,217,184,0.2)] border border-[#E6D9B8]/60 overflow-hidden flex flex-col h-full">
+                
+                {{-- Toolbar (Search) --}}
+                <div class="p-5 border-b border-[#F2ECDC] bg-[#F9F7F2]/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <h3 class="font-serif font-bold text-lg text-[#5E4926]">Daftar Tamu</h3>
+                    
+                    <div class="relative w-full sm:w-64">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9A7D4C]">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        </span>
+                        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama tamu..." 
+                               class="w-full pl-9 rounded-full border-[#E6D9B8] bg-white text-[#5E4926] text-xs focus:border-[#B89760] focus:ring-[#B89760] py-2 shadow-sm">
+                    </div>
                 </div>
                 
-                <div class="overflow-x-auto">
+                {{-- Table Wrapper --}}
+                <div class="overflow-x-auto flex-1">
                     <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-50 text-gray-500 font-medium">
+                        <thead class="bg-[#F2ECDC] text-[#7C6339] font-bold text-xs uppercase tracking-wider">
                             <tr>
-                                <th class="px-4 py-3">Nama</th>
-                                <th class="px-4 py-3 text-center">RSVP</th>
-                                <th class="px-4 py-3">Aksi (Share)</th>
-                                <th class="px-4 py-3 text-right">Hapus</th>
+                                <th class="px-6 py-4 rounded-tl-lg">Informasi Tamu</th>
+                                <th class="px-6 py-4 text-center">Status RSVP</th>
+                                <th class="px-6 py-4">Link & Undangan</th>
+                                <th class="px-6 py-4 text-right rounded-tr-lg">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="divide-y divide-[#F2ECDC]">
                             @forelse($guests as $guest)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-4 py-3">
-                                        <p class="font-bold text-gray-800">{{ $guest->name }}</p>
-                                        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{{ $guest->category }}</span>
+                                <tr class="hover:bg-[#F9F7F2] transition duration-150 group">
+                                    {{-- Kolom Nama --}}
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full hidden bg-[#E6D9B8] text-[#5E4926] font-serif font-bold md:flex items-center justify-center text-xs shrink-0">
+                                                {{ substr($guest->name, 0, 1) }}
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-[#5E4926] text-sm">{{ $guest->name }}</p>
+                                                <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#E6D9B8]/30 text-[#7C6339] border border-[#E6D9B8]">
+                                                    {{ $guest->category }}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td class="px-4 py-3 text-center">
+
+                                    {{-- Kolom RSVP --}}
+                                    <td class="px-6 py-4 text-center">
                                         @if($guest->rsvp_status == 1)
-                                            <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Hadir ({{ $guest->pax }})</span>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-700 border border-green-100">
+                                                <i class="fa-solid fa-circle-check"></i> Hadir ({{ $guest->pax }})
+                                            </span>
                                         @elseif($guest->rsvp_status == 2)
-                                            <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Tidak</span>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-100">
+                                                <i class="fa-solid fa-circle-xmark"></i> Tidak
+                                            </span>
                                         @else
-                                            <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">-</span>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-gray-50 text-gray-500 border border-gray-200">
+                                                <i class="fa-regular fa-clock"></i> Pending
+                                            </span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3">
+
+                                    {{-- Kolom Action Share --}}
+                                    <td class="px-6 py-4">
                                         @php
-                                            // Generate Link
                                             $link = route('invitation.show', ['slug' => $invitation->slug, 'to' => $guest->slug]);
                                             
-                                            // Pesan WA Template
                                             $msg = "Kepada Yth. {$guest->name},\n\n";
-                                            $msg .= "Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir di acara pernikahan kami.\n\n";
+                                            $msg .= "Tanpa mengurangi rasa hormat, kami bermaksud mengundang Anda untuk hadir di acara pernikahan kami.\n\n";
                                             $msg .= "Info lengkap & RSVP:\n{$link}\n\n";
                                             $msg .= "Merupakan suatu kehormatan bagi kami apabila Anda berkenan hadir.\nTerima kasih.";
                                             
                                             $waUrl = "https://wa.me/{$guest->phone}?text=" . urlencode($msg);
                                         @endphp
 
-                                        <div class="flex gap-2">
-                                            {{-- Tombol WA --}}
+                                        <div class="flex items-center gap-2">
+                                            {{-- WA Button --}}
                                             @if($guest->phone)
-                                                <a href="{{ $waUrl }}" target="_blank" class="bg-green-500 text-white px-3 py-1.5 rounded-md hover:bg-green-600 text-xs flex items-center gap-1">
-                                                    <i class="fa-brands fa-whatsapp"></i> Kirim
+                                                <a href="{{ $waUrl }}" target="_blank" 
+                                                   class="bg-[#25D366] hover:bg-[#20bd5a] text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm hover:shadow-md flex items-center gap-1.5">
+                                                    <i class="fa-brands fa-whatsapp text-sm"></i> <span class="hidden sm:inline">Kirim</span>
                                                 </a>
                                             @else
-                                                <button disabled class="bg-gray-200 text-gray-400 px-3 py-1.5 rounded-md text-xs cursor-not-allowed">
+                                                <button disabled class="bg-gray-100 text-gray-400 px-3 py-1.5 rounded-lg text-xs font-bold cursor-not-allowed border border-gray-200">
                                                     <i class="fa-brands fa-whatsapp"></i>
                                                 </button>
                                             @endif
                                             
-                                            {{-- Tombol Copy Link --}}
-                                            <button onclick="navigator.clipboard.writeText('{{ $link }}'); alert('Link tersalin!')" 
-                                                    class="bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1.5 rounded-md hover:bg-blue-100 text-xs">
-                                                <i class="fa-solid fa-copy"></i> Copy
+                                            {{-- Copy Button --}}
+                                            <button onclick="navigator.clipboard.writeText('{{ $link }}'); alert('Link tersalin!');" 
+                                                    class="bg-white border border-[#E6D9B8] text-[#7C6339] hover:bg-[#F9F7F2] hover:text-[#B89760] px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5"
+                                                    title="Copy Link">
+                                                <i class="fa-regular fa-copy"></i>
                                             </button>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 text-right">
-                                        <button wire:click="delete({{ $guest->id }})" wire:confirm="Hapus tamu ini?" class="text-red-400 hover:text-red-600">
-                                            <i class="fa-solid fa-trash"></i>
+
+                                    {{-- Kolom Hapus --}}
+                                    <td class="px-6 py-4 text-right">
+                                        <button wire:click="delete({{ $guest->id }})" wire:confirm="Hapus tamu ini?" 
+                                                class="w-8 h-8 rounded-full bg-white border border-red-100 text-red-400 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition flex items-center justify-center shadow-sm"
+                                                title="Hapus Data">
+                                            <i class="fa-solid fa-trash-can text-xs"></i>
                                         </button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-4 py-8 text-center text-gray-400 text-sm">
-                                        Belum ada tamu. Tambahkan di formulir samping.
+                                    <td colspan="4" class="px-6 py-12 text-center">
+                                        <div class="flex flex-col items-center justify-center">
+                                            <div class="w-16 h-16 bg-[#F9F7F2] rounded-full flex items-center justify-center mb-3 text-[#E6D9B8]">
+                                                <i class="fa-solid fa-user-group text-2xl"></i>
+                                            </div>
+                                            <h4 class="font-serif font-bold text-[#5E4926] text-lg">Belum ada tamu</h4>
+                                            <p class="text-[#9A7D4C] text-xs max-w-xs mt-1">
+                                                Mulai tambahkan daftar undangan Anda melalui formulir di sebelah kiri.
+                                            </p>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforelse
@@ -126,8 +214,9 @@
                     </table>
                 </div>
                 
-                <div class="p-4 border-t">
-                    {{ $guests->links() }}
+                {{-- Pagination Footer --}}
+                <div class="p-4 border-t border-[#F2ECDC] bg-[#F9F7F2]/30">
+                    {{ $guests->links() }} 
                 </div>
             </div>
         </div>

@@ -22,7 +22,11 @@ use App\Livewire\Frontend\ShowInvitation;
 */
 
 // 1. LANDING PAGE UTAMA (Halaman depan aplikasi SaaS kamu)
-Route::get('/', LandingPage::class)->name('home');
+// Route::get('/', LandingPage::class)->name('home');
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
 
 
 // 3. DASHBOARD USER (Area Tertutup / Protected)

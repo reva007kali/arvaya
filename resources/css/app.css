@@ -9,7 +9,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: "Figree", ui-sans-serif, system-ui, sans-serif,
+    --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+    --font-serif: "Cormorant Garamond", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+    --font-display: "Cinzel Decorative", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
 
@@ -24,6 +30,20 @@
     --color-zinc-800: #262626;
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
+
+    --arvaya-50: #f9f7f2;
+    --arvaya-100: #f0ebe0;
+    --arvaya-200: #e2d6c0;
+    --arvaya-300: #d4c1a0;
+    --arvaya-400: #c6ac80;
+    --arvaya-500: #b89760;
+    --arvaya-600: #9a7d4c;
+    --arvaya-700: #7c6339;
+    --arvaya-800: #5e4926;
+    --arvaya-900: #403013;
+
+    --royal-500: #1b4d3e;
+    --royal-600: #143a2f;
 
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
@@ -68,4 +88,20 @@ select:focus[data-flux-control] {
 
 .animate-bounce-slow {
     animation: bounce 3s infinite;
+}
+
+.glass-sidebar {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(230, 217, 184, 0.6);
+}
+
+input {
+    padding: 15px;
+}
+textarea {
+    padding: 15px;
+}
+select {
+    padding: 15px;
 }

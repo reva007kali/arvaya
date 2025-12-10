@@ -1,64 +1,142 @@
-<div class="py-6">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="font-bold text-2xl text-gray-800">Undangan Saya</h2>
+<div class="py-2 animate-fade-in-up">
+    
+    {{-- HEADER SECTION --}}
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+        <div>
+            <h2 class="font-serif font-bold text-3xl text-[#5E4926]">Koleksi Undangan</h2>
+            <p class="text-[#9A7D4C] text-sm mt-1 font-medium">Kelola momen bahagiamu di sini.</p>
+        </div>
         <a href="{{ route('dashboard.create') }}"
-            class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg text-sm flex items-center shadow-lg">
-            <i class="fa-solid fa-plus mr-2"></i> Buat Baru
+            class="group bg-[#B89760] hover:bg-[#9A7D4C] text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg shadow-[#B89760]/30 transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2">
+            <div class="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center group-hover:rotate-90 transition duration-300">
+                <i class="fa-solid fa-plus text-xs"></i>
+            </div>
+            Buat Undangan Baru
         </a>
     </div>
 
+    {{-- ALERT MESSAGE --}}
     @if (session('status'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-            {{ session('status') }}
+        <div class="mb-6 bg-[#F2ECDC] border border-[#B89760] text-[#7C6339] px-6 py-4 rounded-xl flex items-center gap-3 shadow-sm relative overflow-hidden">
+            <div class="w-1 absolute left-0 top-0 bottom-0 bg-[#B89760]"></div>
+            <i class="fa-solid fa-circle-check text-xl text-[#B89760]"></i>
+            <span class="font-medium">{{ session('status') }}</span>
         </div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {{-- GRID CARD --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         @forelse($invitations as $invitation)
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition">
-                <!-- Header Card -->
-                <div class="h-24 bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center p-4">
-                    <h3 class="text-white font-bold text-lg text-center truncate w-full">{{ $invitation->title }}</h3>
+            <div class="group bg-white rounded-2xl border border-[#E6D9B8]/60 shadow-[0_4px_20px_rgb(230,217,184,0.3)] hover:shadow-[0_8px_30px_rgb(184,151,96,0.2)] transition-all duration-300 flex flex-col overflow-hidden relative">
+                
+                {{-- Status Badge (Floating) --}}
+                <div class="absolute top-4 right-4 z-10">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-md border border-white/20
+                        {{ $invitation->is_active 
+                            ? 'bg-green-100/90 text-green-700' 
+                            : 'bg-gray-100/90 text-gray-600' }}">
+                        {{ $invitation->is_active ? 'Published' : 'Draft' }}
+                    </span>
                 </div>
 
-                <div class="p-5">
-                    <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                        <span><i class="fa-regular fa-clock"></i> {{ $invitation->created_at->diffForHumans() }}</span>
-                        <span
-                            class="px-2 py-1 rounded bg-green-100 text-green-800 font-semibold">{{ $invitation->is_active ? 'Active' : 'Draft' }}</span>
+                {{-- CARD HEADER (Visual) --}}
+                <div class="h-32 bg-gradient-to-br from-[#D4C1A0] to-[#B89760] relative overflow-hidden p-6 flex flex-col justify-end">
+                    <!-- Abstract Pattern -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
+                    <div class="absolute bottom-0 left-0 w-24 h-24 bg-[#5E4926]/10 rounded-full blur-xl transform -translate-x-5 translate-y-5"></div>
+                    
+                    <h3 class="font-serif font-bold text-xl text-white truncate drop-shadow-sm relative z-10">
+                        {{ $invitation->title }}
+                    </h3>
+                    <p class="text-white/80 text-xs font-sans relative z-10 flex items-center gap-1 mt-1">
+                        <i class="fa-regular fa-calendar"></i> 
+                        {{ $invitation->created_at->translatedFormat('d F Y') }}
+                    </p>
+                </div>
+
+                {{-- CARD BODY --}}
+                <div class="p-6 flex-1 flex flex-col">
+                    
+                    {{-- STATISTIK GRID (Total Tamu & Views) --}}
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <!-- Tamu Count -->
+                        <div class="bg-[#F9F7F2] p-3 rounded-xl border border-[#E6D9B8]/50 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-[#E6D9B8] flex items-center justify-center text-[#5E4926]">
+                                <i class="fa-solid fa-users text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-[#9A7D4C] font-bold uppercase tracking-wide">Tamu</p>
+                                <p class="text-sm font-bold text-[#5E4926]">
+                                    {{ $invitation->guests_count ?? $invitation->guests->count() }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- View Count -->
+                        <div class="bg-[#F9F7F2] p-3 rounded-xl border border-[#E6D9B8]/50 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-[#E6D9B8] flex items-center justify-center text-[#5E4926]">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-[#9A7D4C] font-bold uppercase tracking-wide">Dilihat</p>
+                                <p class="text-sm font-bold text-[#5E4926]">{{ $invitation->visit_count }}</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Link Preview -->
-                    <div class="mb-4 bg-gray-50 p-2 rounded text-xs flex justify-between items-center">
-                        <span
-                            class="truncate text-gray-600 w-3/4">{{ request()->getHost() }}/{{ $invitation->slug }}</span>
-                        <a href="{{ route('invitation.show', $invitation->slug) }}" target="_blank"
-                            class="text-blue-600 hover:underline font-semibold">Lihat</a>
+                    {{-- LINK PREVIEW --}}
+                    <div class="mb-6">
+                        <label class="text-[10px] uppercase font-bold text-[#9A7D4C] tracking-wider mb-1 block">Tautan Undangan</label>
+                        <div class="bg-white border border-dashed border-[#C6AC80] p-2 rounded-lg flex justify-between items-center group/link hover:border-solid hover:border-[#B89760] transition-all">
+                            <span class="text-xs text-[#7C6339] truncate w-2/3 pl-1 font-mono">
+                                {{ request()->getHost() }}/{{ $invitation->slug }}
+                            </span>
+                            <a href="{{ route('invitation.show', $invitation->slug) }}" target="_blank" 
+                               class="text-[10px] bg-[#F2ECDC] hover:bg-[#B89760] text-[#7C6339] hover:text-white px-3 py-1.5 rounded transition-colors font-bold flex items-center gap-1">
+                                Preview <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="flex gap-2 border-t pt-4 mt-2">
-                        <a href="{{ route('dashboard.invitation.edit', $invitation->id) }}"
-                            class="flex-1 text-center py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-900 transition">
-                            Edit
+                    {{-- ACTIONS --}}
+                    <div class="mt-auto grid grid-cols-4 gap-2 pt-4 border-t border-[#F2ECDC]">
+                        <!-- Edit (Primary) -->
+                        <a href="{{ route('dashboard.invitation.edit', $invitation->id) }}" 
+                           class="col-span-2 text-center py-2.5 bg-[#5E4926] hover:bg-[#403013] text-white text-xs font-bold rounded-lg transition shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-pen-nib"></i> Edit Info
                         </a>
-                        <a href="{{ route('dashboard.guests.index', $invitation->id) }}"
-                            class="flex-1 text-center py-2 bg-white border border-gray-300 text-gray-700 text-sm rounded hover:bg-gray-50 transition">
-                            Tamu
+                        
+                        <!-- Guest Manager -->
+                        <a href="{{ route('dashboard.guests.index', $invitation->id) }}" 
+                           class="col-span-1 text-center py-2.5 bg-white border border-[#C6AC80] text-[#7C6339] hover:bg-[#F2ECDC] text-xs font-bold rounded-lg transition flex items-center justify-center"
+                           title="Kelola Tamu">
+                           <i class="fa-solid fa-user-group text-sm"></i>
                         </a>
-                        <button wire:click="delete({{ $invitation->id }})"
-                            wire:confirm="Yakin ingin menghapus undangan ini?"
-                            class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">
-                            <i class="fa-solid fa-trash"></i>
+
+                        <!-- Delete -->
+                        <button wire:click="delete({{ $invitation->id }})" wire:confirm="Yakin ingin menghapus undangan ini? Data tamu juga akan terhapus." 
+                           class="col-span-1 text-center py-2.5 bg-red-50 hover:bg-red-100 text-red-500 border border-red-100 hover:border-red-200 rounded-lg transition flex items-center justify-center"
+                           title="Hapus">
+                           <i class="fa-regular fa-trash-can text-sm"></i>
                         </button>
                     </div>
+
                 </div>
             </div>
         @empty
-            <div class="col-span-full text-center py-12 bg-white rounded-lg border border-dashed border-gray-300">
-                <p class="text-gray-500 mb-2">Belum ada undangan yang dibuat.</p>
-                <a href="{{ route('dashboard.create') }}" class="text-pink-600 font-semibold hover:underline">Buat
-                    undangan pertama sekarang</a>
+            {{-- EMPTY STATE (Arvaya Style) --}}
+            <div class="col-span-full py-16 text-center bg-white rounded-2xl border-2 border-dashed border-[#E6D9B8]">
+                <div class="w-20 h-20 bg-[#F9F7F2] rounded-full flex items-center justify-center mx-auto mb-4 text-[#B89760]">
+                    <i class="fa-regular fa-heart text-4xl animate-pulse"></i>
+                </div>
+                <h3 class="font-serif text-xl font-bold text-[#5E4926] mb-2">Belum ada undangan</h3>
+                <p class="text-[#9A7D4C] mb-6 max-w-sm mx-auto text-sm">
+                    Kisah bahagiamu dimulai dari sini. Buat undangan pertamamu dengan desain eksklusif kami.
+                </p>
+                <a href="{{ route('dashboard.create') }}" 
+                   class="inline-block px-8 py-3 bg-[#B89760] text-white rounded-full font-bold hover:bg-[#9A7D4C] transition shadow-lg">
+                    Mulai Sekarang
+                </a>
             </div>
         @endforelse
     </div>
