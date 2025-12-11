@@ -66,7 +66,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     
     // Dashboard Admin (Statistik)
-    Route::get('/', AdminDashboard::class)->name('index');
+    Route::get('/dashboard', AdminDashboard::class)->name('index');
     
     // Manajemen User
     Route::get('/users', ManageUser::class)->name('users');
