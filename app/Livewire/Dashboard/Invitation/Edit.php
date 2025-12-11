@@ -4,10 +4,15 @@ namespace App\Livewire\Dashboard\Invitation;
 
 use Livewire\Component;
 use App\Models\Invitation;
+use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use App\Services\OpenAIService;
 use Livewire\Attributes\Layout;
+
+// TAMBAHKAN 2 BARIS INI:
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class Edit extends Component
 {
@@ -38,7 +43,6 @@ class Edit extends Component
         return [
             // Ubah rule dari invitation.theme_template ke properti lokal
             'theme_template' => 'required|string',
-
             'couple.groom.nickname' => 'required',
             'couple.bride.nickname' => 'required',
             'events.*.title' => 'required',
@@ -156,10 +160,44 @@ class Edit extends Component
     {
         $this->validate();
 
+        $manager = new ImageManager(new Driver());
+
         // 1. Upload Foto Baru
+        // 1. Upload & Compress Foto Baru
         foreach ($this->newGalleryImages as $photo) {
-            $path = $photo->store('invitations/' . $this->invitation->id, 'public');
-            $this->existingGallery[] = 'storage/' . $path;
+
+            // Buat nama file unik dengan ekstensi .webp
+            $filename = Str::random(40) . '.webp';
+
+            // Tentukan folder penyimpanan (storage/app/public/invitations/ID)
+            $folder = 'invitations/' . $this->invitation->id;
+            $path = $folder . '/' . $filename;
+
+            // --- PROSES KOMPRESI ---
+            try {
+                // Baca file dari temporary upload livewire
+                $image = $manager->read($photo->getRealPath());
+
+                // A. Resize: Batasi lebar max 1200px (tinggi menyesuaikan proporsi)
+                // Ini mencegah foto 4000px dari kamera HP langsung masuk
+                $image->scaleDown(width: 1200);
+
+                // B. Encode ke WebP dengan kualitas 80%
+                // Kualitas 80 sangat cukup untuk web, ukuran file bisa turun 70-90%
+                $encoded = $image->toWebp(quality: 70);
+
+                // C. Simpan ke Storage Public
+                Storage::disk('public')->put($path, (string) $encoded);
+
+                // Masukkan path ke array data untuk disimpan di DB
+                // Path yang disimpan: storage/invitations/1/namafile.webp
+                $this->existingGallery[] = 'storage/' . $path;
+
+            } catch (\Exception $e) {
+                // Fallback: Jika kompresi gagal (jarang terjadi), simpan file asli
+                $originalPath = $photo->store('invitations/' . $this->invitation->id, 'public');
+                $this->existingGallery[] = 'storage/' . $originalPath;
+            }
         }
 
         // 2. Simpan ke Database
