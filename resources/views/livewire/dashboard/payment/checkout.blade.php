@@ -8,44 +8,67 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
         {{-- KIRI: PILIH PAKET --}}
-        <div class="space-y-4">
+        <div class="space-y-6">
             @foreach ($packages as $key => $pkg)
                 <label class="block cursor-pointer relative group">
                     <input type="radio" wire:model.live="selectedPackage" value="{{ $key }}"
                         class="peer sr-only">
 
+                    {{-- Card Container --}}
                     <div
-                        class="p-6 rounded-2xl border-2 transition-all duration-300
+                        class="p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden
                         {{ $selectedPackage === $key
                             ? 'bg-white border-[#B89760] shadow-[0_4px_20px_rgba(184,151,96,0.2)]'
                             : 'bg-[#F9F7F2] border-transparent hover:border-[#E6D9B8]' }}">
 
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-serif font-bold text-lg text-[#5E4926]">{{ $pkg['name'] }}</h3>
-                            <span class="text-[#B89760] font-bold">Rp
-                                {{ number_format($pkg['price'], 0, ',', '.') }}</span>
+                        {{-- Header Paket --}}
+                        <div class="text-center mb-6 border-b border-dashed border-[#E6D9B8] pb-4">
+                            <h3 class="font-serif font-bold text-xl text-[#5E4926] mb-1">{{ $pkg['name'] }}</h3>
+                            <span class="text-xs font-bold uppercase tracking-wider text-[#9A7D4C]">
+                                {{ $key == 'basic' ? 'Regular' : 'Custom' }}
+                            </span>
+
+                            <div class="mt-4 flex flex-col items-center justify-center">
+                                {{-- Harga Coret --}}
+                                <span class="text-gray-400 text-sm line-through decoration-red-400">
+                                    IDR {{ number_format($pkg['original_price'], 0, ',', '.') }}
+                                </span>
+                                {{-- Harga Asli --}}
+                                <span class="text-2xl font-bold text-[#5E4926]">
+                                    IDR {{ number_format($pkg['price'], 0, ',', '.') }}
+                                </span>
+                            </div>
                         </div>
 
-                        <ul class="text-xs text-[#7C6339] space-y-1">
-                            @foreach ($pkg['features'] as $feat)
-                                <li class="flex items-center gap-2">
-                                    <i class="fa-solid fa-check text-green-600"></i>
-                                    {{ ucwords(str_replace('_', ' ', $feat)) }}
-                                </li>
-                            @endforeach
-                            @foreach ($pkg['limitations'] as $limit)
-                                <li class="flex items-center gap-2 opacity-50">
-                                    <i class="fa-solid fa-xmark text-red-400"></i>
-                                    <del>{{ ucwords(str_replace('_', ' ', $limit)) }}</del>
+                        {{-- List Fitur (Looping dari 'benefits') --}}
+                        <ul class="text-xs text-[#7C6339] space-y-2.5">
+                            @foreach ($pkg['benefits'] as $benefit)
+                                <li class="flex items-start gap-2.5">
+                                    {{-- Icon Check Biru Muda (Sesuai Gambar) --}}
+                                    <i class="fa-solid fa-check text-[#5FAEC9] mt-0.5"></i>
+                                    <span>{{ $benefit }}</span>
                                 </li>
                             @endforeach
                         </ul>
 
-                        {{-- Check Icon --}}
+                        {{-- Check Icon Selection (Pojok Kanan) --}}
                         <div
-                            class="absolute top-4 right-4 text-[#B89760] opacity-0 peer-checked:opacity-100 transition">
-                            <i class="fa-solid fa-circle-check text-xl"></i>
+                            class="absolute top-4 right-4 text-[#B89760] opacity-0 peer-checked:opacity-100 transition transform scale-0 peer-checked:scale-100 duration-300">
+                            <div
+                                class="w-8 h-8 bg-[#B89760] rounded-full flex items-center justify-center text-white shadow-md">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
                         </div>
+
+                        {{-- Button Fake (Visual Saja) --}}
+                        <div class="mt-6 text-center">
+                            <div
+                                class="w-full py-2 rounded-lg font-bold text-sm transition
+                                {{ $selectedPackage === $key ? 'bg-[#E6C65C] text-[#5E4926]' : 'bg-gray-200 text-gray-500' }}">
+                                <i class="fa-solid fa-cart-shopping mr-1"></i> Pesan Paket
+                            </div>
+                        </div>
+
                     </div>
                 </label>
             @endforeach

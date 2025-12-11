@@ -43,18 +43,57 @@ class Invitation extends Model
     ];
 
     // // Definisi Paket (Bisa ditaruh di Config, tapi di sini biar cepat)
+    // Definisi Paket Harga (Sesuai Gambar)
     const PACKAGES = [
         'basic' => [
-            'name' => 'Arvaya Basic',
-            'price' => 49000,
-            'features' => ['rsvp', 'guest_book'], // Fitur yang didapat
-            'limitations' => ['music', 'gallery'] // Fitur yang DIKUNCI
+            'name' => 'Undangan Digital Regular',
+            'price' => 149000,
+            'original_price' => 248000, // Harga coret
+            'is_best_seller' => false,
+            // Fitur visual untuk ditampilkan di Card (UI)
+            'benefits' => [
+                'Pengerjaan 1 hari',
+                'Subdomain nama kamu',
+                'Tema undangan aesthetic',
+                'Sebar undangan tanpa batas',
+                'Request Backsound',
+                'Google maps lokasi acara',
+                'Countdown Event', // <-- Added
+                'Fitur RSVP',
+                'Angpao Digital',
+                'Unlimited Galeri',
+                'Wedding gift',
+                "Fitur kirim do'a & ucapan"
+            ],
+            // Fitur yang DIBATASI secara sistem (Logic Backend)
+            // Regular di gambar punya Musik & Galeri, jadi kita hapus dari limitations.
+            // Kita batasi 'love_story' karena itu ada di Custom.
+            'limitations' => ['love_story', 'custom_css']
         ],
         'premium' => [
-            'name' => 'Arvaya Premium',
-            'price' => 99000,
-            'features' => ['rsvp', 'guest_book', 'gallery', 'music'],
-            'limitations' => []
+            'name' => 'Undangan Digital Custom',
+            'price' => 350000,
+            'original_price' => 500000, // Harga coret
+            'is_best_seller' => true,
+            'benefits' => [
+                'Pengerjaan 1-2 hari',
+                'Bebas custom',
+                'Revisi Maksimal 3 Kali',
+                'Subdomain nama kamu',
+                'Tema undangan aesthetic',
+                'Sebar undangan tanpa batas',
+                'Request Backsound',
+                'Google maps lokasi acara',
+                'Countdown Event', // <-- Added
+                'Fitur RSVP',
+                'Angpao Digital',
+                'Unlimited Galeri',
+                'Wedding gift',
+                // 'Filter Instagram', // <-- Removed
+                'Custom love story',
+                "Fitur kirim do'a & ucapan"
+            ],
+            'limitations' => [] // Full Access
         ],
     ];
 

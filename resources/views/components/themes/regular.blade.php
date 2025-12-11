@@ -1,21 +1,32 @@
 @props(['invitation', 'guest'])
 
 @php
-    // Helper data
+    // 1. Data Helper & Fallback
     $groom = $invitation->couple_data['groom'] ?? [];
     $bride = $invitation->couple_data['bride'] ?? [];
     $gifts = $invitation->gifts_data ?? [];
-
-    // Gunakan '?? []' agar jika null dia menjadi array kosong
     $theme = $invitation->theme_config ?? [];
 
-    // Fallback color jika user tidak set warna
+    // 2. Color Config
     $primaryColor = data_get($theme, 'primary_color', '#B89760');
 
-    // Ambil foto pertama atau placeholder
-    $coverImage =
-        $invitation->gallery_data[0] ??
+    // 3. Image Assets (Support Struktur Baru)
+    $galleryData = $invitation->gallery_data ?? [];
+
+    // Fallback Image placeholder
+    $defaultCover =
         'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80';
+    $defaultProfile = 'https://ui-avatars.com/api/?background=F2ECDC&color=5E4926&size=200&name=';
+
+    $coverImage = $galleryData['cover'] ?? ($galleryData[0] ?? $defaultCover);
+    $groomImage = $galleryData['groom'] ?? $defaultProfile . urlencode($groom['nickname'] ?? 'Groom');
+    $brideImage = $galleryData['bride'] ?? $defaultProfile . urlencode($bride['nickname'] ?? 'Bride');
+    $moments = $galleryData['moments'] ?? [];
+
+    // Jika format lama (array biasa), anggap semua adalah moments
+    if (isset($galleryData[0])) {
+        $moments = $galleryData;
+    }
 @endphp
 
 <div
@@ -23,26 +34,37 @@
 
     {{-- DYNAMIC STYLES --}}
     <style>
+        :root {
+            --color-primary: {{ $primaryColor }};
+        }
+
         .theme-text {
-            color: {{ $primaryColor }};
+            color: var(--color-primary);
         }
 
         .theme-bg {
-            background-color: {{ $primaryColor }};
+            background-color: var(--color-primary);
         }
 
         .theme-border {
-            border-color: {{ $primaryColor }};
+            border-color: var(--color-primary);
         }
 
         .theme-btn:hover {
-            background-color: {{ $primaryColor }};
+            background-color: var(--color-primary);
             color: white;
         }
 
-        /* Smooth Scroll */
         html {
             scroll-behavior: smooth;
+        }
+
+        .font-display {
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .font-serif {
+            font-family: 'Cormorant Garamond', serif;
         }
     </style>
 
@@ -59,14 +81,14 @@
                 class="mb-4 bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/50 w-64"
                 style="display: none;">
 
-                <div class="flex items-center justify-between mb-3 text-[#B89760]">
-                    <button @click="seek(-10)" class="hover:text-[#9A7D4C] transition"><i
+                <div class="flex items-center justify-between mb-3 theme-text">
+                    <button @click="seek(-10)" class="hover:opacity-70 transition"><i
                             class="fa-solid fa-backward-step text-lg"></i></button>
                     <button @click="togglePlay"
                         class="w-10 h-10 theme-bg text-white rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition">
                         <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play pl-1'"></i>
                     </button>
-                    <button @click="seek(10)" class="hover:text-[#9A7D4C] transition"><i
+                    <button @click="seek(10)" class="hover:opacity-70 transition"><i
                             class="fa-solid fa-forward-step text-lg"></i></button>
                 </div>
 
@@ -97,15 +119,14 @@
                     isOpen: false,
                     videoId: '',
                     initPlayer() {
-                        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-                        const match = url.match(regExp);
+                        const match = url.match(
+                            /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
                         this.videoId = (match && match[2].length === 11) ? match[2] : null;
                         if (!this.videoId) return;
                         if (!window.YT) {
                             const tag = document.createElement('script');
                             tag.src = "https://www.youtube.com/iframe_api";
-                            const firstScriptTag = document.getElementsByTagName('script')[0];
-                            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                            document.body.appendChild(tag);
                             window.onYouTubeIframeAPIReady = () => this.createPlayer();
                         } else {
                             this.createPlayer();
@@ -124,21 +145,18 @@
                                 'playlist': this.videoId
                             },
                             events: {
-                                'onReady': (event) => {
-                                    event.target.setPlaybackQuality('tiny');
-                                    event.target.playVideo();
+                                'onReady': (e) => {
+                                    e.target.setPlaybackQuality('tiny');
+                                    e.target.playVideo();
                                 },
-                                'onStateChange': (event) => {
-                                    this.isPlaying = (event.data === YT.PlayerState.PLAYING);
-                                    if (event.data === YT.PlayerState.PLAYING) {
-                                        event.target.setPlaybackQuality('tiny');
-                                    }
+                                'onStateChange': (e) => {
+                                    this.isPlaying = (e.data === YT.PlayerState.PLAYING);
                                 }
                             }
                         });
                     },
                     playMusic() {
-                        if (this.player && typeof this.player.playVideo === 'function') {
+                        if (this.player && this.player.playVideo) {
                             this.player.playVideo();
                             this.isPlaying = true;
                         }
@@ -147,21 +165,22 @@
                         if (!this.player) return;
                         this.isPlaying ? this.player.pauseVideo() : this.player.playVideo();
                     },
-                    seek(seconds) {
+                    seek(s) {
                         if (!this.player) return;
-                        this.player.seekTo(this.player.getCurrentTime() + seconds, true);
+                        this.player.seekTo(this.player.getCurrentTime() + s, true);
                     }
                 }));
             });
         </script>
     @endif
 
-    {{-- COVER SECTION --}}
+    {{-- 1. COVER SECTION --}}
     <section
         class="relative h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden bg-black">
         {{-- Background Image --}}
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset($coverImage) }}" class="w-full h-full object-cover opacity-60">
+            <img src="{{ asset($coverImage) }}"
+                class="w-full h-full object-cover opacity-60 transition-transform duration-[10s] hover:scale-110">
             <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60"></div>
         </div>
 
@@ -172,7 +191,7 @@
 
             <h1 class="font-display text-5xl md:text-8xl mb-4 leading-tight drop-shadow-lg text-[#F9F7F2]">
                 {{ $groom['nickname'] ?? 'Groom' }}
-                <span class="text-[#B89760] font-serif italic mx-2">&</span>
+                <span class="theme-text font-serif italic mx-2">&</span>
                 {{ $bride['nickname'] ?? 'Bride' }}
             </h1>
 
@@ -195,7 +214,7 @@
 
             <div class="mt-12" x-data>
                 <a href="#couple" @click="$dispatch('play-music')"
-                    class="group relative px-8 py-3 bg-[#F9F7F2] text-[#5E4926] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B89760] hover:text-white transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(184,151,96,0.6)] cursor-pointer overflow-hidden">
+                    class="group relative px-8 py-3 bg-[#F9F7F2] text-[#5E4926] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#B89760] hover:text-white transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(184,151,96,0.6)] cursor-pointer overflow-hidden inline-flex items-center gap-2">
                     <i class="fa-solid fa-envelope-open"></i>
                     Buka Undangan
                 </a>
@@ -207,19 +226,19 @@
         </div>
     </section>
 
-    {{-- QUOTE & COUPLE SECTION --}}
+    {{-- 2. COUPLE SECTION --}}
     <section id="couple" class="py-24 container mx-auto px-6 text-center relative overflow-hidden">
-        {{-- Background Decoration --}}
+        {{-- Decoration --}}
         <div
-            class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-[#E6D9B8] rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none">
+            class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 theme-bg rounded-full mix-blend-multiply filter blur-3xl opacity-10 pointer-events-none">
         </div>
 
         <div class="relative z-10" data-aos="fade-up">
-            <i class="fa-solid fa-quote-left text-4xl text-[#E6D9B8] mb-6 block"></i>
+            <i class="fa-solid fa-quote-left text-4xl theme-text opacity-30 mb-6 block"></i>
             <p class="font-serif text-xl md:text-2xl text-[#7C6339] mb-8 max-w-3xl mx-auto leading-relaxed italic">
                 "{{ $invitation->couple_data['quote'] ?? 'Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya...' }}"
             </p>
-            <div class="w-24 h-1 bg-[#B89760] mx-auto rounded-full mb-16"></div>
+            <div class="w-24 h-1 theme-bg mx-auto rounded-full mb-16"></div>
         </div>
 
         <div class="grid md:grid-cols-2 gap-16 items-center mt-12 max-w-5xl mx-auto">
@@ -227,16 +246,16 @@
             <div class="order-2 md:order-1 group" data-aos="fade-right">
                 <div class="relative inline-block mb-6">
                     <div
-                        class="absolute inset-0 border-2 border-[#B89760] rounded-full transform translate-x-2 translate-y-2 transition group-hover:translate-x-0 group-hover:translate-y-0">
+                        class="absolute inset-0 border-2 theme-border rounded-full transform translate-x-2 translate-y-2 transition group-hover:translate-x-0 group-hover:translate-y-0">
                     </div>
-                    <img src="https://ui-avatars.com/api/?name={{ $groom['nickname'] }}&background=F2ECDC&color=5E4926&size=200"
+                    <img src="{{ asset($groomImage) }}"
                         class="w-48 h-48 rounded-full object-cover relative z-10 shadow-lg border-4 border-white">
                 </div>
                 <h3 class="font-display text-4xl theme-text mb-2">{{ $groom['fullname'] }}</h3>
                 <p class="text-[#7C6339] mb-4 font-serif italic text-lg">Putra dari Bpk. {{ $groom['father'] }} & Ibu
                     {{ $groom['mother'] }}</p>
                 <a href="https://instagram.com/{{ $groom['instagram'] }}" target="_blank"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-[#F9F7F2] border border-[#E6D9B8] rounded-full text-xs font-bold text-[#9A7D4C] hover:bg-[#B89760] hover:text-white transition">
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-[#F9F7F2] border border-[#E6D9B8] rounded-full text-xs font-bold text-[#9A7D4C] theme-btn transition">
                     <i class="fa-brands fa-instagram"></i> {{ $groom['instagram'] }}
                 </a>
             </div>
@@ -245,23 +264,23 @@
             <div class="order-1 md:order-2 group" data-aos="fade-left">
                 <div class="relative inline-block mb-6">
                     <div
-                        class="absolute inset-0 border-2 border-[#B89760] rounded-full transform -translate-x-2 translate-y-2 transition group-hover:translate-x-0 group-hover:translate-y-0">
+                        class="absolute inset-0 border-2 theme-border rounded-full transform -translate-x-2 translate-y-2 transition group-hover:translate-x-0 group-hover:translate-y-0">
                     </div>
-                    <img src="https://ui-avatars.com/api/?name={{ $bride['nickname'] }}&background=F2ECDC&color=5E4926&size=200"
+                    <img src="{{ asset($brideImage) }}"
                         class="w-48 h-48 rounded-full object-cover relative z-10 shadow-lg border-4 border-white">
                 </div>
                 <h3 class="font-display text-4xl theme-text mb-2">{{ $bride['fullname'] }}</h3>
                 <p class="text-[#7C6339] mb-4 font-serif italic text-lg">Putri dari Bpk. {{ $bride['father'] }} & Ibu
                     {{ $bride['mother'] }}</p>
                 <a href="https://instagram.com/{{ $bride['instagram'] }}" target="_blank"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-[#F9F7F2] border border-[#E6D9B8] rounded-full text-xs font-bold text-[#9A7D4C] hover:bg-[#B89760] hover:text-white transition">
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-[#F9F7F2] border border-[#E6D9B8] rounded-full text-xs font-bold text-[#9A7D4C] theme-btn transition">
                     <i class="fa-brands fa-instagram"></i> {{ $bride['instagram'] }}
                 </a>
             </div>
         </div>
     </section>
 
-    {{-- ACARA SECTION --}}
+    {{-- 3. EVENTS SECTION --}}
     <section class="py-24 bg-[#E6D9B8]/20 relative">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16" data-aos="fade-up">
@@ -276,8 +295,7 @@
                     <div class="bg-white p-10 rounded-t-[50px] rounded-b-2xl shadow-[0_10px_40px_-10px_rgba(184,151,96,0.1)] border border-[#E6D9B8]/50 text-center relative group hover:-translate-y-2 transition duration-500"
                         data-aos="fade-up" data-aos-delay="100">
                         {{-- Decorative Line --}}
-                        <div
-                            class="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-[#B89760] rounded-b-lg">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 theme-bg rounded-b-lg">
                         </div>
 
                         <h3 class="font-serif font-bold text-3xl mb-6 theme-text">{{ $event['title'] }}</h3>
@@ -285,7 +303,7 @@
                         <div class="space-y-6">
                             <div class="flex items-center justify-center gap-3">
                                 <div
-                                    class="w-10 h-10 rounded-full bg-[#F9F7F2] flex items-center justify-center text-[#B89760] border border-[#E6D9B8]">
+                                    class="w-10 h-10 rounded-full bg-[#F9F7F2] flex items-center justify-center theme-text border border-[#E6D9B8]">
                                     <i class="fa-regular fa-calendar-check"></i>
                                 </div>
                                 <div class="text-left">
@@ -297,7 +315,7 @@
 
                             <div class="flex items-center justify-center gap-3">
                                 <div
-                                    class="w-10 h-10 rounded-full bg-[#F9F7F2] flex items-center justify-center text-[#B89760] border border-[#E6D9B8]">
+                                    class="w-10 h-10 rounded-full bg-[#F9F7F2] flex items-center justify-center theme-text border border-[#E6D9B8]">
                                     <i class="fa-regular fa-clock"></i>
                                 </div>
                                 <div class="text-left">
@@ -317,7 +335,7 @@
 
                         @if (!empty($event['map_link']))
                             <a href="{{ $event['map_link'] }}" target="_blank"
-                                class="inline-block px-8 py-3 bg-[#5E4926] text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#403013] transition shadow-lg">
+                                class="inline-block px-8 py-3 bg-[#5E4926] text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#403013] transition shadow-lg theme-btn">
                                 <i class="fa-solid fa-location-arrow mr-2"></i> Google Maps
                             </a>
                         @endif
@@ -327,8 +345,8 @@
         </div>
     </section>
 
-    {{-- GALERI SECTION --}}
-    @if (!empty($invitation->gallery_data))
+    {{-- 4. GALLERY SECTION --}}
+    @if (!empty($moments))
         <section class="py-24 container mx-auto px-6">
             <div class="text-center mb-16" data-aos="fade-up">
                 <i class="fa-solid fa-camera-retro text-3xl text-[#E6D9B8] mb-4"></i>
@@ -336,7 +354,7 @@
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]" data-aos="fade-up">
-                @foreach ($invitation->gallery_data as $index => $photo)
+                @foreach ($moments as $index => $photo)
                     <div
                         class="relative group overflow-hidden rounded-2xl shadow-md border border-[#E6D9B8]/50 {{ $index % 3 == 0 ? 'md:col-span-2 md:row-span-2 h-full' : '' }}">
                         <img src="{{ asset($photo) }}"
@@ -348,36 +366,32 @@
         </section>
     @endif
 
-    {{-- RSVP & GUESTBOOK WRAPPER --}}
+    {{-- 5. RSVP & GUESTBOOK WRAPPER --}}
     <section class="py-24 bg-gradient-to-b from-[#F9F7F2] to-[#E6D9B8]/30">
         <div class="container mx-auto px-6 max-w-4xl">
 
-            {{-- RSVP Widget --}}
             <div class="mb-20" data-aos="zoom-in">
                 @livewire('frontend.rsvp-form', ['invitation' => $invitation, 'guest' => $guest])
             </div>
 
-            {{-- Divider --}}
             <div class="flex items-center gap-4 mb-20 justify-center opacity-50">
-                <div class="h-px bg-[#B89760] w-20"></div>
-                <i class="fa-solid fa-heart text-[#B89760]"></i>
-                <div class="h-px bg-[#B89760] w-20"></div>
+                <div class="h-px theme-bg w-20"></div>
+                <i class="fa-solid fa-heart theme-text"></i>
+                <div class="h-px theme-bg w-20"></div>
             </div>
 
-            {{-- GuestBook Widget --}}
             <div data-aos="fade-up">
                 @livewire('frontend.guest-book', ['invitation' => $invitation, 'guest' => $guest])
             </div>
-
         </div>
     </section>
 
-    {{-- GIFT SECTION --}}
-    @if (!empty($invitation->gifts_data))
+    {{-- 6. GIFT SECTION --}}
+    @if (!empty($gifts))
         <section class="py-24 bg-white container mx-auto px-6 text-center">
             <div class="max-w-2xl mx-auto mb-12" data-aos="fade-up">
                 <div
-                    class="w-16 h-16 bg-[#F9F7F2] rounded-full flex items-center justify-center mx-auto mb-6 text-[#B89760] border border-[#E6D9B8]">
+                    class="w-16 h-16 bg-[#F9F7F2] rounded-full flex items-center justify-center mx-auto mb-6 theme-text border border-[#E6D9B8]">
                     <i class="fa-solid fa-gift text-2xl"></i>
                 </div>
                 <h2 class="font-display text-4xl font-bold mb-4 text-[#5E4926]">Tanda Kasih</h2>
@@ -388,11 +402,11 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center max-w-4xl mx-auto">
-                @foreach ($invitation->gifts_data as $gift)
+                @foreach ($gifts as $gift)
                     <div class="bg-gradient-to-br from-[#F9F7F2] to-white p-8 rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] border border-[#E6D9B8] relative group hover:-translate-y-1 transition duration-300"
                         data-aos="flip-up">
                         <div
-                            class="absolute top-0 left-0 w-full h-1 bg-[#B89760] rounded-t-2xl opacity-0 group-hover:opacity-100 transition">
+                            class="absolute top-0 left-0 w-full h-1 theme-bg rounded-t-2xl opacity-0 group-hover:opacity-100 transition">
                         </div>
 
                         <div class="font-bold text-2xl mb-1 text-[#5E4926]">{{ $gift['bank_name'] }}</div>
@@ -404,7 +418,7 @@
                                 class="text-lg font-mono text-[#5E4926] font-bold tracking-wide">{{ $gift['account_number'] }}</span>
                             <button
                                 onclick="navigator.clipboard.writeText('{{ $gift['account_number'] }}'); alert('No Rekening Disalin!');"
-                                class="text-[#B89760] hover:text-[#5E4926] transition" title="Copy">
+                                class="theme-text hover:text-[#5E4926] transition" title="Copy">
                                 <i class="fa-regular fa-copy"></i>
                             </button>
                         </div>
@@ -423,9 +437,8 @@
 
         <div class="container mx-auto px-6">
             <h2 class="font-display text-3xl mb-4 text-white">{{ $groom['nickname'] ?? 'Groom' }} <span
-                    class="font-serif italic text-[#B89760]">&</span> {{ $bride['nickname'] ?? 'Bride' }}</h2>
+                    class="font-serif italic theme-text">&</span> {{ $bride['nickname'] ?? 'Bride' }}</h2>
             <p class="text-xs tracking-[0.2em] opacity-50 uppercase mb-8">Terima Kasih Atas Doa & Restu Anda</p>
-
             <div class="text-[10px] text-[#9A7D4C]">
                 &copy; {{ date('Y') }} Arvaya De Aure. All rights reserved.
             </div>
@@ -434,6 +447,12 @@
 
 </div>
 
-@section('$script')
-    <script></script>
-@endsection
+{{-- GLOBAL SCRIPTS FOR THEME --}}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 1000,
+        once: false,
+        offset: 50,
+    });
+</script>
