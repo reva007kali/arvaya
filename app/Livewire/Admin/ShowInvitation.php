@@ -88,7 +88,6 @@ class ShowInvitation extends Component
     }
 
     // --- RENDER VIEW ---
-    #[Layout('layouts.app')]
     public function render()
     {
         // Query Tamu dengan Pencarian
