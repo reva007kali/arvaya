@@ -13,6 +13,7 @@ use App\Livewire\Admin\ManageTemplates;
 use App\Livewire\Admin\ManageInvitation;
 use App\Livewire\Frontend\ShowInvitation;
 use App\Livewire\Dashboard\Payment\Checkout;
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Dashboard\Index as DashboardIndex;
 use App\Livewire\Dashboard\Guest\Index as GuestManager;
@@ -38,6 +39,9 @@ Route::get('/', function () {
 Route::get('/invitation/inactive', function () {
     return view('errors.invitation-inactive');
 })->name('invitation.inactive');
+
+Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [SocialiteController::class, 'callback']);
 
 
 
