@@ -15,7 +15,8 @@ class ManageTemplates extends Component
     public $templates;
     
     // Form Inputs
-    public $name, $slug, $description, $type = 'basic';
+    public $name, $slug, $description, $tier = 'basic';
+    public $price = 0; // Tambahan: Harga Template
     public $thumbnail, $preview_video;
     public $templateId = null;
     
@@ -32,7 +33,8 @@ class ManageTemplates extends Component
     public function openModal()
     {
         $this->resetValidation();
-        $this->reset(['name', 'slug', 'description', 'type', 'thumbnail', 'preview_video', 'templateId']);
+        // Reset form inputs termasuk price
+        $this->reset(['name', 'slug', 'description', 'tier', 'price', 'thumbnail', 'preview_video', 'templateId']);
         $this->isOpen = true;
         $this->isEdit = false;
     }
@@ -45,8 +47,8 @@ class ManageTemplates extends Component
         $this->name = $t->name;
         $this->slug = $t->slug;
         $this->description = $t->description;
-        $this->type = $t->type;
-        // Thumbnail & Video tidak di-load ke input file, hanya preview
+        $this->tier = $t->tier;
+        $this->price = $t->price; // Load harga
         
         $this->isOpen = true;
         $this->isEdit = true;
@@ -57,35 +59,34 @@ class ManageTemplates extends Component
         $rules = [
             'name' => 'required|string|max:255',
             'slug' => 'required|alpha_dash|unique:templates,slug,' . $this->templateId,
-            'type' => 'required',
+            'tier' => 'required|in:basic,premium,exclusive',
+            'price' => 'required|numeric|min:0', // Validasi harga
         ];
 
         if (!$this->isEdit) {
-            $rules['thumbnail'] = 'required|image|max:2048'; // 2MB
+            $rules['thumbnail'] = 'required|image|max:2048';
         }
 
         $this->validate($rules);
 
         $data = [
             'name' => $this->name,
-            'slug' => $this->slug, // PENTING: Ini harus sama dengan nama file blade di folder themes/
+            'slug' => $this->slug,
             'description' => $this->description,
-            'type' => $this->type,
+            'tier' => $this->tier,
+            'price' => $this->price, // Simpan harga
         ];
 
-        // Handle Image Upload
         if ($this->thumbnail) {
             $data['thumbnail'] = $this->thumbnail->store('templates/thumbnails', 'public');
         }
 
-        // Handle Video Upload
         if ($this->preview_video) {
             $data['preview_video'] = $this->preview_video->store('templates/videos', 'public');
         }
 
         if ($this->isEdit) {
             $t = Template::findOrFail($this->templateId);
-            // Hapus file lama jika ada upload baru (Opsional)
             if ($this->thumbnail && $t->thumbnail) Storage::disk('public')->delete($t->thumbnail);
             
             $t->update($data);

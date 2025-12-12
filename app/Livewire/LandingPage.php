@@ -5,7 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
-#[Layout('components.layouts.guest')]
+#[Layout('components.layouts.public')]
 
 class LandingPage extends Component
 {

@@ -9,25 +9,7 @@ class Invitation extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'slug',
-        'title',
-        'theme_template',
-        'theme_config',
-        'couple_data',
-        'event_data',
-        'gallery_data',
-        'gifts_data',
-        'ai_wishes_summary',
-        'is_active',
-        'visit_count',
-        'package_type',
-        'amount',
-        'payment_status',
-        'payment_proof',
-        'active_until',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be cast.
@@ -47,9 +29,9 @@ class Invitation extends Model
     const PACKAGES = [
         'basic' => [
             'name' => 'Undangan Digital Regular',
-            'price' => 149000,
-            'original_price' => 248000, // Harga coret
-            'is_best_seller' => false,
+            'price' => 49000,
+            'original_price' => 150000, // Harga coret
+            'is_best_seller' => true,
             // Fitur visual untuk ditampilkan di Card (UI)
             'benefits' => [
                 'Pengerjaan 1 hari',
@@ -72,7 +54,7 @@ class Invitation extends Model
         ],
         'premium' => [
             'name' => 'Undangan Digital Custom',
-            'price' => 350000,
+            'price' => 150000,
             'original_price' => 500000, // Harga coret
             'is_best_seller' => true,
             'benefits' => [
@@ -114,6 +96,12 @@ class Invitation extends Model
         return $this->hasMany(Message::class);
     }
 
+    // Relasi ke Template (PENTING: Kita hubungkan lewat slug)
+    public function template()
+    {
+        return $this->belongsTo(Template::class, 'theme_template', 'slug');
+    }
+
     // --- Helpers / Accessors ---
     public function getGroomNicknameAttribute()
     {
@@ -126,15 +114,28 @@ class Invitation extends Model
         return $this->couple_data['bride']['nickname'] ?? 'Bride';
     }
 
-    // Helper Cek Fitur
-    public function hasFeature($featureName)
+    public function hasFeature($feature)
     {
-        // Jika paketnya basic, cek apakah fitur ini ada di limitations
-        $package = self::PACKAGES[$this->package_type] ?? self::PACKAGES['basic'];
+        // 1. Ambil template yang dipakai
+        $template = Template::where('slug', $this->theme_template)->first();
 
-        if (in_array($featureName, $package['limitations'])) {
-            return false;
-        }
-        return true;
+        // 2. Jika template tidak ditemukan (misal dihapus), fallback ke basic
+        $tier = $template ? $template->tier : 'basic';
+
+        // 3. Cek definisi tier di Model Template
+        $limitations = Template::TIERS[$tier]['limitations'] ?? [];
+
+        // 4. Return true jika fitur TIDAK ada di limitations
+        return !in_array($feature, $limitations);
+    }
+
+    /**
+     * Helper untuk mendapatkan Info Tier saat ini
+     */
+    public function getCurrentTierInfo()
+    {
+        $template = Template::where('slug', $this->theme_template)->first();
+        $tier = $template ? $template->tier : 'basic';
+        return Template::TIERS[$tier];
     }
 }

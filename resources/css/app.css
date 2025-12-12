@@ -9,16 +9,14 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+    /* --- FONTS --- */
     --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
-    --font-serif: "Cormorant Garamond", ui-sans-serif, system-ui, sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-        "Noto Color Emoji";
-    --font-display: "Cinzel Decorative", ui-sans-serif, system-ui, sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-        "Noto Color Emoji";
+    --font-serif: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-display: "Cinzel Decorative", ui-sans-serif, system-ui, sans-serif;
 
+    /* --- COLORS: ZINC --- */
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
     --color-zinc-200: #e5e5e5;
@@ -31,23 +29,50 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --arvaya-50: #f9f7f2;
-    --arvaya-100: #f0ebe0;
-    --arvaya-200: #e2d6c0;
-    --arvaya-300: #d4c1a0;
-    --arvaya-400: #c6ac80;
-    --arvaya-500: #b89760;
-    --arvaya-600: #9a7d4c;
-    --arvaya-700: #7c6339;
-    --arvaya-800: #5e4926;
-    --arvaya-900: #403013;
+    /* --- COLORS: ARVAYA (Theme Color) --- */
+    --color-arvaya-50: #f9f7f2;
+    --color-arvaya-100: #f0ebe0;
+    --color-arvaya-200: #e2d6c0;
+    --color-arvaya-300: #d4c1a0;
+    --color-arvaya-400: #c6ac80;
+    --color-arvaya-500: #b89760;
+    --color-arvaya-600: #9a7d4c;
+    --color-arvaya-700: #7c6339;
+    --color-arvaya-800: #5e4926;
+    --color-arvaya-900: #403013;
+    --color-arvaya-950: #251c16; /* Ditambahkan untuk deep dark contrast landing page */
 
-    --royal-500: #1b4d3e;
-    --royal-600: #143a2f;
+    /* --- COLORS: ROYAL --- */
+    --color-royal-500: #1b4d3e;
+    --color-royal-600: #143a2f;
 
+    /* --- COLORS: FLUX UI MAPPING --- */
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+
+    /* --- ANIMATIONS (Landing Page Specific) --- */
+    --animate-blob: blob 7s infinite;
+    --animate-float: float 6s ease-in-out infinite;
+    --animate-marquee: marquee 25s linear infinite;
+    --animate-spin-slow: spin 8s linear infinite;
+    --animate-bounce-slow: bounce 3s infinite;
+
+    /* --- KEYFRAMES --- */
+    @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+    @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-100%); }
+    }
 }
 
 @layer theme {
@@ -68,6 +93,7 @@
     }
 }
 
+/* --- FLUX UI OVERRIDES --- */
 [data-flux-field]:not(ui-radio, ui-checkbox) {
     @apply grid gap-2;
 }
@@ -82,26 +108,42 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+/* --- LANDING PAGE & CUSTOM UTILITIES --- */
+@layer utilities {
+    /* Kaca Efek Sidebar (Existing) */
+    .glass-sidebar {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(230, 217, 184, 0.6);
+    }
 
-.animate-bounce-slow {
-    animation: bounce 3s infinite;
+    /* Landing Page Utilities */
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+    
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+
+    .mask-gradient-x {
+        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    .perspective-1000 {
+        perspective: 1000px;
+    }
 }
 
-.glass-sidebar {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border-right: 1px solid rgba(230, 217, 184, 0.6);
-}
-
+/* --- GLOBAL FORM RESETS --- */
 input {
-    padding: 15px;
+    padding-block: 10px;
+    padding-inline: 10px;
 }
 textarea {
-    padding: 15px;
+    padding: 5px;
 }
 select {
-    padding: 15px;
+    padding: 10px;
 }

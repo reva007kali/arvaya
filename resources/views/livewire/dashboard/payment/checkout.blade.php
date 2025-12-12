@@ -1,117 +1,113 @@
 <div class="py-6 max-w-4xl mx-auto animate-fade-in-up">
 
-    <div class="mb-8 text-center">
-        <h2 class="font-serif font-bold text-3xl text-[#5E4926]">Aktivasi Undangan</h2>
-        <p class="text-[#9A7D4C] text-sm mt-1">Pilih paket dan lakukan pembayaran agar undangan bisa diakses tamu.</p>
+    <div class="mb-10 text-center">
+        <h2 class="font-serif font-bold text-3xl text-[#5E4926]">Selesaikan Pembayaran</h2>
+        <p class="text-[#9A7D4C] text-sm mt-1">Satu langkah lagi untuk mengaktifkan undanganmu.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-        {{-- KIRI: PILIH PAKET --}}
+        {{-- LEFT: INVOICE DETAILS --}}
         <div class="space-y-6">
-            @foreach ($packages as $key => $pkg)
-                <label class="block cursor-pointer relative group">
-                    <input type="radio" wire:model.live="selectedPackage" value="{{ $key }}"
-                        class="peer sr-only">
+            <div class="bg-white p-8 rounded-3xl border border-[#E6D9B8] shadow-sm relative overflow-hidden">
+                {{-- Decorative Stamp --}}
+                <div
+                    class="absolute top-0 right-0 bg-[#F9F7F2] px-4 py-2 rounded-bl-2xl border-b border-l border-[#E6D9B8] text-[#B89760] font-bold text-xs uppercase tracking-wider">
+                    Invoice
+                </div>
 
-                    {{-- Card Container --}}
+                <h3 class="font-serif font-bold text-xl text-[#5E4926] mb-6">Detail Pesanan</h3>
+
+                <div class="flex gap-4 mb-6">
                     <div
-                        class="p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden
-                        {{ $selectedPackage === $key
-                            ? 'bg-white border-[#B89760] shadow-[0_4px_20px_rgba(184,151,96,0.2)]'
-                            : 'bg-[#F9F7F2] border-transparent hover:border-[#E6D9B8]' }}">
-
-                        {{-- Header Paket --}}
-                        <div class="text-center mb-6 border-b border-dashed border-[#E6D9B8] pb-4">
-                            <h3 class="font-serif font-bold text-xl text-[#5E4926] mb-1">{{ $pkg['name'] }}</h3>
-                            <span class="text-xs font-bold uppercase tracking-wider text-[#9A7D4C]">
-                                {{ $key == 'basic' ? 'Regular' : 'Custom' }}
-                            </span>
-
-                            <div class="mt-4 flex flex-col items-center justify-center">
-                                {{-- Harga Coret --}}
-                                <span class="text-gray-400 text-sm line-through decoration-red-400">
-                                    IDR {{ number_format($pkg['original_price'], 0, ',', '.') }}
-                                </span>
-                                {{-- Harga Asli --}}
-                                <span class="text-2xl font-bold text-[#5E4926]">
-                                    IDR {{ number_format($pkg['price'], 0, ',', '.') }}
-                                </span>
-                            </div>
-                        </div>
-
-                        {{-- List Fitur (Looping dari 'benefits') --}}
-                        <ul class="text-xs text-[#7C6339] space-y-2.5">
-                            @foreach ($pkg['benefits'] as $benefit)
-                                <li class="flex items-start gap-2.5">
-                                    {{-- Icon Check Biru Muda (Sesuai Gambar) --}}
-                                    <i class="fa-solid fa-check text-[#5FAEC9] mt-0.5"></i>
-                                    <span>{{ $benefit }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-
-                        {{-- Check Icon Selection (Pojok Kanan) --}}
-                        <div
-                            class="absolute top-4 right-4 text-[#B89760] opacity-0 peer-checked:opacity-100 transition transform scale-0 peer-checked:scale-100 duration-300">
-                            <div
-                                class="w-8 h-8 bg-[#B89760] rounded-full flex items-center justify-center text-white shadow-md">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-                        </div>
-
-                        {{-- Button Fake (Visual Saja) --}}
-                        <div class="mt-6 text-center">
-                            <div
-                                class="w-full py-2 rounded-lg font-bold text-sm transition
-                                {{ $selectedPackage === $key ? 'bg-[#E6C65C] text-[#5E4926]' : 'bg-gray-200 text-gray-500' }}">
-                                <i class="fa-solid fa-cart-shopping mr-1"></i> Pesan Paket
-                            </div>
-                        </div>
-
+                        class="w-16 h-16 bg-[#E6D9B8] rounded-xl flex items-center justify-center text-white text-2xl shadow-inner">
+                        <i class="fa-solid fa-file-invoice"></i>
                     </div>
-                </label>
-            @endforeach
-        </div>
+                    <div>
+                        <p class="text-xs text-[#9A7D4C] uppercase font-bold">Template Pilihan</p>
+                        <h4 class="font-bold text-lg text-[#5E4926]">{{ $templateName }}</h4>
+                        <span
+                            class="inline-block bg-[#2D2418] text-[#B89760] text-[10px] px-2 py-0.5 rounded uppercase tracking-wider font-bold mt-1">
+                            {{ ucfirst($templateTier) }} Tier
+                        </span>
+                    </div>
+                </div>
 
-        {{-- KANAN: INSTRUKSI & UPLOAD --}}
-        <div class="bg-white p-8 rounded-3xl border border-[#E6D9B8] shadow-sm">
-            <h4 class="font-bold text-[#5E4926] mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-wallet text-[#B89760]"></i> Transfer Pembayaran
-            </h4>
+                <div class="bg-[#F9F7F2] p-4 rounded-xl mb-6">
+                    <p class="text-xs font-bold text-[#7C6339] mb-2 uppercase">Fitur Termasuk:</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        @foreach ($features as $feat)
+                            <div class="flex items-center gap-2 text-xs text-[#5E4926]">
+                                <i class="fa-solid fa-check text-green-600"></i>
+                                {{ ucwords(str_replace('_', ' ', $feat)) }}
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
 
-            <div class="bg-[#F9F7F2] p-4 rounded-xl border border-[#F2ECDC] mb-6">
-                <p class="text-xs text-[#9A7D4C] uppercase font-bold mb-1">Bank BCA</p>
-                <p class="font-mono text-xl font-bold text-[#5E4926] mb-1">123 456 7890</p>
-                <p class="text-xs text-[#7C6339]">A.N PT Arvaya De Aure</p>
-                <p class="mt-3 text-sm font-bold text-[#B89760]">
-                    Total: Rp {{ number_format($packages[$selectedPackage]['price'], 0, ',', '.') }}
-                </p>
+                <div class="flex justify-between items-end border-t border-dashed border-[#E6D9B8] pt-4">
+                    <span class="text-sm font-bold text-[#7C6339]">Total Tagihan</span>
+                    <span class="font-sans font-bold text-3xl text-[#B89760]">Rp
+                        {{ number_format($templatePrice, 0, ',', '.') }}</span>
+                </div>
             </div>
 
-            <form wire:submit="save" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-[#7C6339] uppercase mb-2">Upload Bukti Transfer</label>
-                    <div
-                        class="border-2 border-dashed border-[#E6D9B8] rounded-xl p-6 text-center hover:bg-[#F9F7F2] transition relative">
-                        <input type="file" wire:model="proofImage"
-                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+            <a href="{{ route('dashboard.invitation.edit', $invitation->id) }}"
+                class="flex items-center justify-center gap-2 text-sm text-[#9A7D4C] hover:text-[#5E4926] transition">
+                <i class="fa-solid fa-arrow-left"></i> Ganti Template
+            </a>
+        </div>
 
-                        @if ($proofImage)
-                            <img src="{{ $proofImage->temporaryUrl() }}"
-                                class="h-32 mx-auto rounded-lg shadow-sm object-cover">
-                        @else
-                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#E6D9B8] mb-2"></i>
-                            <p class="text-xs text-[#9A7D4C]">Klik untuk upload (JPG/PNG)</p>
-                        @endif
+        {{-- RIGHT: PAYMENT --}}
+        <div class="bg-[#2D2418] p-8 rounded-3xl text-[#E6D9B8] shadow-xl relative h-fit">
+            <h4 class="font-bold text-white mb-6 flex items-center gap-2 text-lg">
+                <i class="fa-solid fa-wallet text-[#B89760]"></i> Metode Transfer
+            </h4>
+
+            <div class="bg-white/5 p-5 rounded-2xl border border-white/10 mb-8 backdrop-blur-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <p class="text-[10px] text-[#9A7D4C] uppercase font-bold">Bank Transfer</p>
+                    <button onclick="navigator.clipboard.writeText('0561621828'); alert('Tersalin!')"
+                        class="text-xs text-[#B89760] hover:text-white transition cursor-pointer"><i
+                            class="fa-regular fa-copy"></i> Salin</button>
+                </div>
+                <div class="flex items-center gap-3 mb-1">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg"
+                        class="h-8 p-1 bg-white rounded px-1">
+                    <p class="font-mono text-2xl font-bold text-white tracking-wider">0561621828</p>
+                </div>
+                <p class="text-xs text-[#E6D9B8]/80">A.N Revaldy Adhityawiguna Sahabu</p>
+            </div>
+
+            <form wire:submit="save" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-[#E6D9B8] uppercase mb-2">Upload Bukti Transfer</label>
+                    <div class="relative w-full">
+                        <input type="file" wire:model="proofImage" id="file-upload" class="hidden" />
+                        <label for="file-upload"
+                            class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300
+                            {{ $proofImage ? 'border-green-500/50 bg-green-500/10' : 'border-[#E6D9B8]/30 hover:bg-white/5 hover:border-[#B89760]' }}">
+
+                            @if ($proofImage)
+                                <div class="text-green-400 flex flex-col items-center">
+                                    <i class="fa-solid fa-circle-check text-3xl mb-2"></i>
+                                    <span class="text-xs font-bold">File Diupload, Konfirmasi Pembayaran</span>
+                                </div>
+                            @else
+                                <div class="flex flex-col items-center text-[#9A7D4C]">
+                                    <i class="fa-solid fa-camera text-2xl mb-2"></i>
+                                    <p class="text-xs">Upload Foto</p>
+                                </div>
+                            @endif
+                        </label>
                     </div>
                     @error('proofImage')
-                        <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
+                        <span class="text-red-400 text-xs mt-2 block">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <button type="submit"
-                    class="w-full py-3 bg-[#5E4926] text-white rounded-xl font-bold hover:bg-[#403013] transition shadow-lg flex justify-center gap-2">
+                    class="w-full py-4 bg-[#B89760] text-white rounded-xl font-bold hover:bg-[#9A7D4C] transition shadow-lg shadow-[#B89760]/20 flex justify-center gap-2 transform hover:-translate-y-0.5">
                     <span wire:loading.remove>Konfirmasi Pembayaran</span>
                     <span wire:loading><i class="fa-solid fa-circle-notch fa-spin"></i> Sending...</span>
                 </button>

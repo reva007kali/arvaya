@@ -18,13 +18,27 @@
             <div
                 class="group bg-white rounded-2xl border border-[#E6D9B8] overflow-hidden shadow-sm hover:shadow-[0_10px_30px_rgba(184,151,96,0.2)] transition duration-300 flex flex-col h-full relative">
 
-                {{-- Badge Type --}}
-                <div class="absolute top-3 left-3 z-10">
+                {{-- Badge Type & Price (Top Left) --}}
+                <div class="absolute top-3 left-3 z-10 flex flex-col items-start gap-1">
+                    {{-- Tipe --}}
                     <span
                         class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm border border-white/20
                         {{ $item->type == 'premium' ? 'bg-[#2D2418] text-[#B89760]' : 'bg-white/90 text-[#7C6339]' }}">
                         {{ $item->type }}
                     </span>
+
+                    {{-- Harga (Jika Premium/Berbayar) --}}
+                    @if ($item->price > 0)
+                        <span
+                            class="px-2 py-1 rounded text-[10px] font-bold shadow-sm border border-white/20 bg-[#B89760] text-white">
+                            Rp {{ number_format($item->price, 0, ',', '.') }}
+                        </span>
+                    @else
+                        <span
+                            class="px-2 py-1 rounded text-[10px] font-bold shadow-sm border border-white/20 bg-green-500 text-white">
+                            FREE
+                        </span>
+                    @endif
                 </div>
 
                 {{-- Thumbnail / Video Area --}}
@@ -72,7 +86,7 @@
         @endforeach
     </div>
 
-    {{-- MODAL FORM (Slide Over / Center Modal) --}}
+    {{-- MODAL FORM --}}
     @if ($isOpen)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#2D2418]/60 backdrop-blur-sm px-4"
             x-transition>
@@ -81,7 +95,8 @@
 
                 <div class="p-6 border-b border-[#F2ECDC] bg-[#F9F7F2] flex justify-between items-center">
                     <h3 class="font-serif font-bold text-xl text-[#5E4926]">
-                        {{ $isEdit ? 'Edit Template' : 'Tambah Template Baru' }}</h3>
+                        {{ $isEdit ? 'Edit Template' : 'Tambah Template Baru' }}
+                    </h3>
                     <button wire:click="$set('isOpen', false)" class="text-[#9A7D4C] hover:text-[#5E4926]"><i
                             class="fa-solid fa-times text-xl"></i></button>
                 </div>
@@ -110,14 +125,33 @@
                         @enderror
                     </div>
 
-                    {{-- Type --}}
-                    <div>
-                        <label class="block text-xs font-bold text-[#7C6339] uppercase mb-1">Kategori</label>
-                        <select wire:model="type"
-                            class="w-full rounded-xl border-[#E6D9B8] text-sm focus:border-[#B89760] focus:ring-[#B89760]">
-                            <option value="basic">Basic</option>
-                            <option value="premium">Premium (Berbayar)</option>
-                        </select>
+                    {{-- Type & Price Row --}}
+                    <div class="grid grid-cols-2 gap-4">
+                        {{-- Type --}}
+                        {{-- Input Tier --}}
+                        <div>
+                            <label class="block text-xs font-bold text-[#7C6339] uppercase mb-1">Kategori Tier</label>
+                            <select wire:model="tier"
+                                class="w-full rounded-xl border-[#E6D9B8] text-sm focus:border-[#B89760] focus:ring-[#B89760]">
+                                <option value="basic">Basic (Fitur Standar)</option>
+                                <option value="premium">Premium (Fitur Lengkap)</option>
+                                <option value="exclusive">Exclusive (Full Custom)</option>
+                            </select>
+                        </div>
+
+                        {{-- Harga --}}
+                        <div>
+                            <label class="block text-xs font-bold text-[#7C6339] uppercase mb-1">Harga (IDR)</label>
+                            <div class="relative">
+                                <span
+                                    class="absolute inset-y-0 left-0 pl-3 flex items-center text-[#9A7D4C] font-bold text-xs">Rp</span>
+                                <input type="number" wire:model="price" placeholder="0"
+                                    class="w-full pl-8 rounded-xl border-[#E6D9B8] text-sm focus:border-[#B89760] focus:ring-[#B89760]">
+                            </div>
+                            @error('price')
+                                <span class="text-red-500 text-xs">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
 
                     {{-- Description --}}

@@ -31,10 +31,10 @@ use App\Livewire\Dashboard\Invitation\Create as InvitationCreate;
 */
 
 // 1. LANDING PAGE UTAMA (Halaman depan aplikasi SaaS kamu)
-// Route::get('/', LandingPage::class)->name('home');
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', LandingPage::class)->name('home');
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('home');
 
 Route::get('/invitation/inactive', function () {
     return view('errors.invitation-inactive');

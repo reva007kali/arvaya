@@ -25,32 +25,6 @@
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    @livewireStyles
-
-    <style>
-        [x-cloak] {
-            display: none !important;
-        }
-
-        .font-display {
-            font-family: 'Cinzel Decorative', cursive;
-        }
-
-        .font-serif {
-            font-family: 'Cormorant Garamond', serif;
-        }
-
-        .font-sans {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        /* Glass Effect */
-        .glass-sidebar {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(230, 217, 184, 0.6);
-        }
-    </style>
 </head>
 
 <body class="font-sans h-svh flex antialiased bg-[#F9F7F2] text-[#5E4926]" x-data="{ sidebarOpen: false }"
@@ -292,8 +266,6 @@
             </div>
         </main>
     </div>
-
-    @livewireScripts
 </body>
 
 </html>
