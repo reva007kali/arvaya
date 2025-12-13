@@ -1,11 +1,8 @@
 <div class="max-w-3xl mx-auto relative z-10">
     
     {{-- FORM KIRIM UCAPAN --}}
-    <div class="bg-white p-8 rounded-3xl shadow-[0_10px_40px_-10px_rgba(184,151,96,0.15)] border border-[#E6D9B8] mb-12 relative overflow-hidden group">
-        
-        {{-- Hiasan Sudut --}}
-        <div class="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#E6D9B8] rounded-tl-3xl opacity-50"></div>
-        <div class="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#E6D9B8] rounded-br-3xl opacity-50"></div>
+    <div class="p-8 shadow-[0_10px_40px_-10px_rgba(184,151,96,0.15)] border border-[#E6D9B8] mb-12 relative overflow-hidden group">
+    
 
         <h3 class="font-serif text-2xl font-bold mb-2 text-center text-[#5E4926]">Kirim Doa & Ucapan</h3>
         <p class="text-center text-[#9A7D4C] text-sm mb-6 italic font-serif">"Doa restu Anda adalah kado terindah bagi kami"</p>

@@ -1,19 +1,20 @@
 @import "tailwindcss";
-@import "../../vendor/livewire/flux/dist/flux.css";
+/* @import "../../vendor/livewire/flux/dist/flux.css"; */
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* @custom-variant dark (&:where(.dark, .dark *)); */
 
 @theme {
     /* --- FONTS --- */
     --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
-    --font-serif: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-serif: "Cormorant Garamond", ui-serif, Georgia, Cambria,
+        "Times New Roman", Times, serif;
     --font-display: "Cinzel Decorative", ui-sans-serif, system-ui, sans-serif;
 
     /* --- COLORS: ZINC --- */
@@ -60,18 +61,35 @@
 
     /* --- KEYFRAMES --- */
     @keyframes blob {
-        0% { transform: translate(0px, 0px) scale(1); }
-        33% { transform: translate(30px, -50px) scale(1.1); }
-        66% { transform: translate(-20px, 20px) scale(0.9); }
-        100% { transform: translate(0px, 0px) scale(1); }
+        0% {
+            transform: translate(0px, 0px) scale(1);
+        }
+        33% {
+            transform: translate(30px, -50px) scale(1.1);
+        }
+        66% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+        100% {
+            transform: translate(0px, 0px) scale(1);
+        }
     }
     @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
     }
     @keyframes marquee {
-        0% { transform: translateX(0%); }
-        100% { transform: translateX(-100%); }
+        0% {
+            transform: translateX(0%);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
     }
 }
 
@@ -121,14 +139,26 @@ select:focus[data-flux-control] {
     .animation-delay-2000 {
         animation-delay: 2s;
     }
-    
+
     .animation-delay-4000 {
         animation-delay: 4s;
     }
 
     .mask-gradient-x {
-        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        mask-image: linear-gradient(
+            to right,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent
+        );
+        -webkit-mask-image: linear-gradient(
+            to right,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent
+        );
     }
 
     .perspective-1000 {
@@ -146,4 +176,66 @@ textarea {
 }
 select {
     padding: 10px;
+}
+
+/* --- Base Styles --- */
+/* Elemen yang akan dianimasikan disembunyikan state awalnya */
+[data-anim] {
+    opacity: 0;
+    will-change: opacity, transform; /* Optimasi GPU */
+    transition-property: opacity, transform;
+    /* Default values jika tidak di-set di HTML */
+    transition-duration: var(--anim-duration, 0.8s);
+    transition-timing-function: var(
+        --anim-ease,
+        cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    );
+    transition-delay: var(--anim-delay, 0s);
+}
+
+/* --- State: Active (Saat masuk viewport) --- */
+[data-anim].is-visible {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0);
+}
+
+/* --- Variasi Animasi (Presets) --- */
+
+/* FADE */
+[data-anim="fade-up"] {
+    transform: translateY(100px);
+}
+[data-anim="fade-down"] {
+    transform: translateY(-50px);
+}
+[data-anim="fade-left"] {
+    transform: translateX(100px);
+}
+[data-anim="fade-right"] {
+    transform: translateX(-100px);
+}
+
+/* ZOOM */
+[data-anim="zoom-in"] {
+    transform: scale(0.4);
+}
+[data-anim="zoom-out"] {
+    transform: scale(1.2);
+}
+
+/* FLIP */
+[data-anim="flip-up"] {
+    transform: rotateX(90deg);
+}
+[data-anim="flip-left"] {
+    transform: rotateY(90deg);
+}
+
+/* Jika user menonaktifkan animasi di OS (Accessibility) */
+@media (prefers-reduced-motion: reduce) {
+    [data-anim] {
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
 }

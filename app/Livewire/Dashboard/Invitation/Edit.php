@@ -202,7 +202,7 @@ class Edit extends Component
             $image->scaleDown(width: $width);
 
             // 3. Convert ke WebP (Quality 80%)
-            $encoded = $image->toWebp(quality: 80);
+            $encoded = $image->toWebp(quality: 60);
 
             // 4. Simpan ke Public Storage
             Storage::disk('public')->put($path, (string) $encoded);

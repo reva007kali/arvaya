@@ -189,16 +189,18 @@
                 <div class="flex-1 p-8 rounded-[2rem] bg-white border border-gray-200 hover:border-arvaya-200 transition relative group"
                     data-aos="fade-up" data-aos-delay="100">
                     <h3 class="font-bold text-gray-900 text-lg mb-2">Paket Love</h3>
-                    <div class="text-4xl font-serif font-bold text-arvaya-900 mb-6">Rp 99.000</div>
+                    <div class="text-4xl font-serif font-bold text-arvaya-900 mb-6">Rp 150.000</div>
                     <ul class="space-y-4 text-gray-600 text-sm mb-8">
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Masa
                             Aktif 6 Bulan</li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> 500 Tamu
                             Undangan</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> 3 Pilihan
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Berbagai Pilihan
                             Tema Basic</li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Backsound
                             Musik</li>
+
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Fitur Reservasi</li>
                     </ul>
                     <a href="#"
                         class="block w-full py-3 rounded-full border border-arvaya-900 text-arvaya-900 font-bold text-center hover:bg-arvaya-50 transition">Pilih
@@ -212,7 +214,7 @@
                         class="absolute top-0 right-0 bg-arvaya-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl rounded-tr-[2rem]">
                         BEST SELLER</div>
                     <h3 class="font-bold text-arvaya-200 text-lg mb-2">Paket Eternal</h3>
-                    <div class="text-4xl font-serif font-bold text-white mb-6">Rp 199.000</div>
+                    <div class="text-4xl font-serif font-bold text-white mb-6">Rp 350.000</div>
                     <ul class="space-y-4 text-arvaya-100 text-sm mb-8">
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-arvaya-400"></i> <b>Masa
                                 Aktif Selamanya</b></li>

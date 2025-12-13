@@ -39,7 +39,7 @@
         :class="scrolled ? 'bg-white/80 backdrop-blur-md shadow-lg py-3' : 'bg-transparent py-6'">
         <div class="container mx-auto px-6 flex justify-between items-center">
             <a href="/" class="font-serif text-2xl font-bold text-arvaya-900 tracking-tight">
-                ARVAYA <span class="text-arvaya-500">.</span>
+                <img class="h-10" src="img/large-favicon/logo-transparent.png" alt="">
             </a>
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
                 <a href="#features" class="hover:text-arvaya-500 transition">Fitur</a>

@@ -5,60 +5,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    {{-- SEO Meta Tags (Dinamis dari slot 'meta' jika ada) --}}
-    @if (isset($meta))
-        {{ $meta }}
-    @else
-        <title>{{ config('app.name', 'Undangan Pernikahan') }}</title>
-    @endif
-
-    {{-- <link rel="icon" href="/favicon.ico" sizes="any"> --}}
+    <meta name="description"
+        content="{{ $groom['nickname'] ?? 'Groom' }} & {{ $bride['nickname'] ?? 'bride' }} Wedding Invitation">
+    <meta property="og:title"
+        content="{{ $groom['nickname'] ?? 'Groom' }} & {{ $bride['nickname'] ?? 'bride' }} Wedding Invitation">
+    <meta property="og:type" content="website">
+    
     <link rel="icon" href="/logo.png" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/logo.png">
 
-    <!-- Fonts Global (Optional, biasanya tiap tema punya font sendiri) -->
-    <!-- Fonts (Sama seperti Landing Page) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
 
-    <!-- Font Awesome (Wajib untuk icon sosmed/navigasi di undangan) -->
+    {{ $head }}
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    {{-- aos CDN --}}
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    @livewireStyles
-
-    {{-- Slot untuk style tambahan spesifik tema --}}
-    {{ $styles ?? '' }}
 </head>
 
-<body class="antialiased text-gray-800 bg-gray-50">
 
-    {{-- Tidak ada Navbar, Sidebar, atau Container. --}}
-    {{-- Semuanya dikendalikan oleh Component Tema --}}
+<body class="antialiased bg-black">
+
 
     {{ $slot }}
 
-    @livewireScripts
-
-    {{-- Slot untuk script tambahan spesifik tema (misal: animasi AOS/GSAP) --}}
-    {{ $scripts ?? '' }}
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 50,
-        });
-    </script>
 </body>
 
 </html>

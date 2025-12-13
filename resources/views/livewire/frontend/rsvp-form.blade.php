@@ -1,10 +1,6 @@
-<div class="bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-[0_10px_40px_-10px_rgba(184,151,96,0.2)] border border-[#E6D9B8] relative overflow-hidden">
+<div class="p-8 shadow-[0_10px_40px_-10px_rgba(184,151,96,0.2)] relative overflow-hidden">
     
-    {{-- Hiasan Sudut Dekoratif --}}
-    <div class="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-[#B89760]/30 rounded-tl-2xl pointer-events-none"></div>
-    <div class="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-[#B89760]/30 rounded-br-2xl pointer-events-none"></div>
-
-    <h3 class="font-serif text-3xl font-bold text-[#5E4926] mb-1 text-center">Konfirmasi Kehadiran</h3>
+    <h3 class="font-serif text-3xl font-bold theme-text mb-1 text-center">Konfirmasi Kehadiran</h3>
     <p class="text-center text-[#9A7D4C] text-[10px] font-bold uppercase tracking-[0.2em] mb-8">RSVP Form</p>
 
     @if ($isSubmitted)
@@ -93,7 +89,7 @@
 
             {{-- Submit Button --}}
             <button type="submit"
-                class="w-full py-3.5 bg-gradient-to-r from-[#B89760] to-[#9A7D4C] text-white font-bold rounded-xl hover:shadow-lg hover:shadow-[#B89760]/40 transition transform hover:-translate-y-0.5 mt-2 text-sm uppercase tracking-wider flex items-center justify-center gap-2">
+                class="w-full py-3.5 theme-bg text-white font-bold rounded-xl hover:shadow-lg hover:shadow-[#B89760]/40 transition transform hover:-translate-y-0.5 mt-2 text-sm uppercase tracking-wider flex items-center justify-center gap-2">
                 <span wire:loading.remove>Kirim Konfirmasi</span>
                 <span wire:loading><i class="fa-solid fa-circle-notch fa-spin"></i> Memproses...</span>
             </button>
