@@ -189,7 +189,7 @@
     {{-- MUSIC PLAYER (YOUTUBE INTEGRATION) --}}
     @if (!empty($theme['music_url']))
         <div x-data="youtubePlayer('{{ $theme['music_url'] }}')" x-init="initPlayer()" @play-music.window="playMusic()"
-            class="fixed bottom-6 left-6 z-50 font-sans">
+            class="fixed bottom-6 right-6 z-50 font-sans">
 
             {{-- POPUP CONTROLS --}}
             <div x-show="isOpen" x-transition:enter="transition ease-out duration-300"
