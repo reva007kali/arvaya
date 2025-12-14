@@ -3,10 +3,12 @@
 namespace App\Livewire\Dashboard\Payment;
 
 use Livewire\Component;
+use App\Models\Template;
+use App\Models\Invitation;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
-use App\Models\Invitation;
-use App\Models\Template;
+use App\Mail\NewOrderNotification;
+use Illuminate\Support\Facades\Mail;
 
 class Checkout extends Component
 {
@@ -44,12 +46,24 @@ class Checkout extends Component
     public function save()
     {
         $this->validate(['proofImage' => 'required|image|max:2048']);
+
         $path = $this->proofImage->store('payment_proofs', 'public');
 
         $this->invitation->update([
             'payment_proof' => 'storage/' . $path,
             'payment_status' => 'pending',
         ]);
+
+
+        // --- LOGIC KIRIM EMAIL ---
+        try {
+            // Ganti dengan email kamu yang asli
+            Mail::to('admin@arvayadeaure.com')->send(new NewOrderNotification($this->invitation));
+        } catch (\Exception $e) {
+            // Log error jika email gagal, tapi jangan hentikan proses checkout user
+            \Illuminate\Support\Facades\Log::error('Gagal kirim email notifikasi: ' . $e->getMessage());
+        }
+        // -------------------------
 
         session()->flash('message', 'Pembayaran dikirim! Menunggu verifikasi.');
         return redirect()->route('dashboard.index');
