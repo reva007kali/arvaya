@@ -1,18 +1,18 @@
-<div class="max-w-3xl mx-auto relative z-10">
+<div class="max-w-3xl mx-auto relative z-10 font-display">
     
     {{-- FORM KIRIM UCAPAN --}}
     <div class="p-8 shadow-[0_10px_40px_-10px_rgba(184,151,96,0.15)] border border-[#E6D9B8] mb-12 relative overflow-hidden group">
     
 
-        <h3 class="font-serif text-2xl font-bold mb-2 text-center text-[#5E4926]">Kirim Doa & Ucapan</h3>
-        <p class="text-center text-[#9A7D4C] text-sm mb-6 italic font-serif">"Doa restu Anda adalah kado terindah bagi kami"</p>
+        <h3 class=" text-2xl font-bold mb-2 text-center text-[#5E4926]">Kirim Doa & Ucapan</h3>
+        <p class="text-center text-sm mb-6">"Doa restu Anda adalah kado terindah bagi kami"</p>
 
         <form wire:submit="sendMessage" class="space-y-5 relative z-10">
             <div>
-                <label class="block text-xs font-bold text-[#7C6339] uppercase tracking-wider mb-1.5 ml-1">Nama Anda</label>
+                <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 ml-1">Nama Anda</label>
                 <div class="relative">
                     <input type="text" wire:model="sender_name" 
-                        class="w-full pl-4 pr-4 py-3 rounded-xl bg-[#F9F7F2] border-[#E6D9B8] text-[#5E4926] placeholder-[#C6AC80] focus:border-[#B89760] focus:ring-1 focus:ring-[#B89760] transition-all text-sm font-medium" 
+                        class="w-full pl-4 pr-4 py-3 rounded-xl border-[#E6D9B8] placeholder-[#C6AC80] focus:border-[#B89760] focus:ring-1 focus:ring-[#B89760] transition-all text-sm font-medium" 
                         placeholder="Tulis nama lengkap..." 
                         {{ $guest ? 'readonly' : '' }}>
                     @if($guest)
@@ -33,7 +33,7 @@
 
             <div class="text-right">
                 <button type="submit" 
-                    class="px-8 py-3 bg-[#5E4926] text-white rounded-full font-bold shadow-lg shadow-[#5E4926]/20 hover:bg-[#403013] hover:shadow-xl transition transform hover:-translate-y-0.5 text-sm flex items-center gap-2 ml-auto">
+                    class="px-8 py-3 theme-bg text-white rounded-full font-bold shadow-lg shadow-[#5E4926]/20 hover:bg-[#403013] hover:shadow-xl transition transform hover:-translate-y-0.5 text-sm flex items-center gap-2 ml-auto">
                     <span wire:loading.remove>Kirim Ucapan <i class="fa-solid fa-paper-plane ml-1"></i></span>
                     <span wire:loading><i class="fa-solid fa-circle-notch fa-spin"></i> Mengirim...</span>
                 </button>
@@ -49,7 +49,7 @@
 
     {{-- LIST UCAPAN --}}
     <div class="space-y-6">
-        <h4 class="font-serif font-bold text-xl text-[#5E4926] mb-4 text-center border-b border-[#E6D9B8] pb-4 mx-auto w-1/2">
+        <h4 class=" font-bold text-xl text-[#5E4926] mb-4 text-center border-b border-[#E6D9B8] pb-4 mx-auto w-1/2">
             {{ $messages->total() }} Doa Terkumpul
         </h4>
 
@@ -61,13 +61,13 @@
 
                 <div class="flex gap-4 relative z-10">
                     {{-- Avatar Inisial --}}
-                    <div class="w-10 h-10 rounded-full bg-[#F2ECDC] border border-[#E6D9B8] flex items-center justify-center text-[#B89760] font-serif font-bold text-lg shrink-0">
+                    <div class="w-10 h-10 rounded-full bg-[#F2ECDC] border border-[#E6D9B8] flex items-center justify-center text-[#B89760]  font-bold text-lg shrink-0">
                         {{ substr($msg->sender_name, 0, 1) }}
                     </div>
 
                     <div class="flex-1">
                         <div class="flex justify-between items-start mb-1">
-                            <h4 class="font-bold text-[#5E4926] font-serif text-lg">{{ $msg->sender_name }}</h4>
+                            <h4 class="font-bold text-[#5E4926]  text-lg">{{ $msg->sender_name }}</h4>
                             <span class="text-[10px] uppercase tracking-wider text-[#9A7D4C] bg-[#F9F7F2] px-2 py-1 rounded-full">
                                 {{ $msg->created_at->diffForHumans() }}
                             </span>

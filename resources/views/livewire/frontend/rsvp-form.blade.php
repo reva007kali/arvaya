@@ -1,20 +1,20 @@
 <div class="p-8 shadow-[0_10px_40px_-10px_rgba(184,151,96,0.2)] relative overflow-hidden">
     
-    <h3 class="font-serif text-3xl font-bold theme-text mb-1 text-center">Konfirmasi Kehadiran</h3>
-    <p class="text-center text-[#9A7D4C] text-[10px] font-bold uppercase tracking-[0.2em] mb-8">RSVP Form</p>
+    <h3 class="text-3xl font-bold mb-1 text-center">Konfirmasi Kehadiran</h3>
+    <p class="text-center text-[10px] font-bold uppercase tracking-[0.2em] mb-8">RSVP Form</p>
 
     @if ($isSubmitted)
         <div class="text-center py-8 animate-fade-in-up">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-[#F9F7F2] border border-[#E6D9B8] rounded-full mb-6 relative">
-                <div class="absolute inset-0 rounded-full border border-[#B89760] animate-ping opacity-20"></div>
-                <i class="fa-solid fa-check text-3xl text-[#B89760]"></i>
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 relative">
+                <div class="absolute inset-0 rounded-full border animate-ping opacity-20"></div>
+                <i class="fa-solid fa-check text-3xl "></i>
             </div>
             <h4 class="text-xl font-serif font-bold text-[#5E4926] mb-2">Terima Kasih!</h4>
-            <p class="text-[#7C6339] text-sm max-w-xs mx-auto leading-relaxed">
+            <p class="text-sm max-w-xs mx-auto leading-relaxed">
                 Konfirmasi kehadiran Anda telah kami catat. Kami menantikan kehadiran Anda di hari bahagia kami.
             </p>
             <button wire:click="$set('isSubmitted', false)" 
-                class="mt-6 text-xs font-bold text-[#B89760] hover:text-[#5E4926] uppercase tracking-wider border-b border-[#B89760] pb-0.5 hover:border-[#5E4926] transition">
+                class="mt-6 text-xs font-bold  hover:text-[#5E4926] uppercase tracking-wider border-b  transition">
                 Ubah Data Konfirmasi
             </button>
         </div>
@@ -22,20 +22,20 @@
         <form wire:submit="save" class="space-y-5 text-left relative z-10">
             {{-- Nama --}}
             <div>
-                <label class="block text-xs font-bold text-[#7C6339] uppercase tracking-wider mb-1.5 ml-1">Nama Tamu</label>
+                <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 ml-1">Nama Tamu</label>
                 <div class="relative">
                     <input type="text" wire:model="name"
-                        class="w-full px-4 py-3 rounded-xl bg-[#F9F7F2] border-[#E6D9B8] text-[#5E4926] placeholder-[#C6AC80] focus:border-[#B89760] focus:ring-1 focus:ring-[#B89760] transition-all text-sm font-medium"
+                        class="w-full px-4 py-3 rounded-xl transition-all text-sm font-medium"
                         {{ $guest ? 'readonly' : '' }} placeholder="Nama Lengkap">
                     
                     @if ($guest)
-                        <div class="absolute right-3 top-3.5 text-[#B89760]" title="Tamu Terundang">
+                        <div class="absolute right-3 top-3.5 " title="Tamu Terundang">
                             <i class="fa-solid fa-envelope-circle-check text-lg"></i>
                         </div>
                     @endif
                 </div>
                 @if ($guest)
-                    <p class="text-[10px] text-[#9A7D4C] mt-1.5 ml-1 flex items-center gap-1">
+                    <p class="text-[10px] mt-1.5 ml-1 flex items-center gap-1">
                         <i class="fa-solid fa-lock text-[8px]"></i> Nama sesuai undangan khusus
                     </p>
                 @endif
@@ -43,9 +43,9 @@
 
             {{-- WhatsApp --}}
             <div>
-                <label class="block text-xs font-bold text-[#7C6339] uppercase tracking-wider mb-1.5 ml-1">Nomor WhatsApp <span class="text-[#C6AC80] font-normal normal-case">(Opsional)</span></label>
+                <label class="block text-xs font-bold  uppercase tracking-wider mb-1.5 ml-1">Nomor WhatsApp <span class=" font-normal normal-case">(Opsional)</span></label>
                 <input type="number" wire:model="phone"
-                    class="w-full px-4 py-3 rounded-xl bg-[#F9F7F2] border-[#E6D9B8] text-[#5E4926] placeholder-[#C6AC80] focus:border-[#B89760] focus:ring-1 focus:ring-[#B89760] transition-all text-sm font-medium">
+                    class="w-full px-4 py-3 rounded-xl  focus:ring-1 transition-all text-sm font-medium">
             </div>
 
             {{-- Jumlah Pax --}}
