@@ -12,7 +12,7 @@
     "src": "public/img/bg/paper2.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BW2V7Sjr.css",
+    "file": "assets/app-CZvvdm0e.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "names": [
@@ -20,7 +20,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-yxbfQNTb.js",
+    "file": "assets/app-D4yU1rW-.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
