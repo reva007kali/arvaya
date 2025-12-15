@@ -460,7 +460,7 @@
             <div
                 class="border-t border-arvaya-800 pt-10 flex flex-col md:flex-row justify-between items-center text-sm text-arvaya-400">
                 <div class="mb-4 md:mb-0">
-                    <span class="font-serif font-bold text-lg text-white">ARVAYA</span> de aure
+                    <span class="font-serif font-bold text-lg text-white">ARVAYA</span>
                 </div>
                 <div>
                     &copy; {{ date('Y') }} All rights reserved. Made with <i
