@@ -464,7 +464,7 @@
                 </div>
                 <div>
                     &copy; {{ date('Y') }} All rights reserved. Made with <i
-                        class="fa-solid fa-heart text-red-500"></i> in Indonesia.
+                        class="fa-solid fa-heart text-red-500"></i>.
                 </div>
                 <div class="flex gap-4 mt-4 md:mt-0">
                     <a href="#" class="hover:text-white"><i class="fa-brands fa-instagram"></i></a>
