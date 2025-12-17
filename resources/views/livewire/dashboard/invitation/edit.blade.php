@@ -122,6 +122,16 @@
         </div>
 
         {{-- MODAL AREA --}}
+        <div wire:loading.delay wire:target="openModal"
+            class="fixed inset-0 z-[9999] bg-black/30 backdrop-blur-sm flex items-center justify-center">
+            <div class="bg-white/90 border border-[#E6D9B8] rounded-2xl px-6 py-5 shadow-xl text-center">
+                <div class="mb-3 text-[#B89760]">
+                    <i class="fa-solid fa-circle-notch fa-spin text-2xl"></i>
+                </div>
+                <p class="text-sm font-bold text-[#5E4926]">Membuka editor...</p>
+                <p class="text-[10px] text-[#9A7D4C] mt-1">Mohon tunggu sebentar</p>
+            </div>
+        </div>
         @if ($modalOpen)
             {{-- 
                 FIX: Z-Index 9999 memastikan modal di atas segalanya.
