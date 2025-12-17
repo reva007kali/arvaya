@@ -618,56 +618,40 @@
                                         </div>
                                     @endif
 
-                                    {{-- Existing Photos Grid (Draggable) --}}
-                                    <div x-data="{
-                                        initSort() {
-                                            const container = $el
-                                            const start = () => {
-                                                if (!window.Sortable) return
-                                                Sortable.create(container, {
-                                                    animation: 150,
-                                                    ghostClass: 'opacity-50',
-                                                    forceFallback: true,
-                                                    fallbackOnBody: true,
-                                                    touchStartThreshold: 8,
-                                                    draggable: '[data-index]',
-                                                    filter: 'button',
-                                                    preventOnFilter: true,
-                                                    onEnd: () => {
-                                                        const nodes = Array.from(container.querySelectorAll('[data-index]'))
-                                                        const order = nodes.map(n => parseInt(n.dataset.index))
-                                                        $wire.reorderMoments(order)
-                                                    }
-                                                })
-                                            }
-                                            if (!window.Sortable) {
-                                                const s = document.createElement('script')
-                                                s.src = 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js'
-                                                s.async = true
-                                                s.onload = start
-                                                document.head.appendChild(s)
-                                            } else {
-                                                start()
-                                            }
-                                        }
-                                    }" x-init="initSort()"
-                                        class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
-                                        @foreach ($gallery['moments'] as $index => $path)
-                                            <div data-index="{{ $index }}" draggable="true"
-                                                class="group relative aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-md transition cursor-move">
-                                                <img src="{{ asset($path) }}" loading="lazy"
-                                                    class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <h5 class="font-serif font-bold text-[#5E4926]">Urutan Galeri</h5>
+                                            <span
+                                                class="text-[10px] font-bold bg-[#F2ECDC] text-[#7C6339] px-2 py-0.5 rounded-full border border-[#E6D9B8]">{{ count($gallery['moments'] ?? []) }}
+                                                foto</span>
+                                        </div>
+                                        <div class="space-y-3">
+                                            @foreach ($gallery['moments'] as $index => $path)
                                                 <div
-                                                    class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300">
+                                                    class="flex items-center gap-3 bg-white rounded-xl border border-[#E6D9B8] p-2 shadow-sm">
+                                                    <div
+                                                        class="w-24 aspect-[3/4] rounded-lg overflow-hidden border border-[#E6D9B8] bg-[#F9F7F2] shrink-0">
+                                                        <img src="{{ asset($path) }}" loading="lazy"
+                                                            class="w-full h-full object-cover">
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        <button wire:click="moveMomentUp({{ $index }})"
+                                                            class="md:w-8 md:h-8 w-10 h-10 rounded-full bg-white text-[#5E4926] hover:bg-[#F2ECDC] shadow-sm flex items-center justify-center border border-[#E6D9B8] {{ $index === 0 ? 'opacity-50 cursor-not-allowed' : '' }}">
+                                                            <i class="fa-solid fa-chevron-up text-sm md:text-xs"></i>
+                                                        </button>
+                                                        <button wire:click="moveMomentDown({{ $index }})"
+                                                            class="md:w-8 md:h-8 w-10 h-10 rounded-full bg-white text-[#5E4926] hover:bg-[#F2ECDC] shadow-sm flex items-center justify-center border border-[#E6D9B8] {{ $index === count($gallery['moments']) - 1 ? 'opacity-50 cursor-not-allowed' : '' }}">
+                                                            <i class="fa-solid fa-chevron-down text-sm md:text-xs"></i>
+                                                        </button>
+                                                        <button wire:click="removeMoment({{ $index }})"
+                                                            class="md:w-8 md:h-8 w-10 h-10 rounded-full bg-white text-red-500 hover:bg-red-50 shadow-sm flex items-center justify-center border border-red-100">
+                                                            <i class="fa-solid fa-trash-can text-xs"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <button wire:click="removeMoment({{ $index }})"
-                                                    class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white text-red-500 shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300">
-                                                    <i class="fa-solid fa-trash-can text-xs"></i>
-                                                </button>
-                                            </div>
-                                        @endforeach
+                                            @endforeach
+                                        </div>
                                     </div>
-                                    {{-- SortableJS loaded dynamically in Alpine init for reliability --}}
                                 </div>
                             </div>
                         @endif

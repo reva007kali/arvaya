@@ -136,12 +136,19 @@
                             class="flex items-center gap-3 rounded-full bg-white border border-[#E6D9B8] px-3 py-2 focus-within:border-[#B89760] focus-within:ring-1 focus-within:ring-[#B89760]">
                             <i class="fa-solid fa-magnifying-glass text-[#B89760] text-xs"></i>
                             <input type="text" wire:model.live="search" placeholder="Cari nama tamu..."
-                                class="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none text-xs text-[#5E4926]">
+                                   class="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none text-xs text-[#5E4926]">
                             <span wire:loading wire:target="search" class="text-[#B89760]">
                                 <i class="fa-solid fa-circle-notch fa-spin text-xs"></i>
                             </span>
                         </div>
                     </div>
+                    {{-- <div class="w-full sm:w-auto">
+                        <button wire:click="broadcast"
+                                class="w-full sm:w-auto px-4 py-2 rounded-full bg-[#25D366] text-white text-xs font-bold shadow-sm hover:shadow-md hover:bg-[#20bd5a] transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp"></i> Kirim ke Semua
+                        </button>
+                        <p class="text-[10px] text-[#9A7D4C] mt-1 text-center sm:text-right">Izinkan pop-up agar WhatsApp terbuka</p>
+                    </div> --}}
                 </div>
 
                 {{-- Table Wrapper --}}
@@ -267,6 +274,19 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div x-data="{
+                    queue: [],
+                    idx: 0,
+                    delay: 1200,
+                    start(urls) { this.queue = urls || []; this.idx = 0; if (this.queue.length) this.openNext() },
+                    openNext() {
+                        if (this.idx >= this.queue.length) { alert('Broadcast selesai'); return }
+                        const url = this.queue[this.idx++]
+                        window.open(url, '_blank')
+                        setTimeout(() => this.openNext(), this.delay)
+                    }
+                }" x-on:broadcast-wa.window="start($event.detail.urls)"></div>
 
                 {{-- Pagination Footer --}}
                 <div class="p-4 border-t border-[#F2ECDC] bg-[#F9F7F2]/30">

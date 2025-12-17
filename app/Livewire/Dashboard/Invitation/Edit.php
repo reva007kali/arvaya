@@ -420,6 +420,28 @@ class Edit extends Component
         }
     }
 
+    public function moveMomentUp($index)
+    {
+        $moments = $this->gallery['moments'] ?? [];
+        if ($index > 0 && isset($moments[$index])) {
+            [$moments[$index - 1], $moments[$index]] = [$moments[$index], $moments[$index - 1]];
+            $this->gallery['moments'] = array_values($moments);
+            $this->invitation->update(['gallery_data' => $this->gallery]);
+            $this->dispatch('notify', message: 'Foto dipindah ke atas.', type: 'success');
+        }
+    }
+
+    public function moveMomentDown($index)
+    {
+        $moments = $this->gallery['moments'] ?? [];
+        if ($index < count($moments) - 1 && isset($moments[$index])) {
+            [$moments[$index + 1], $moments[$index]] = [$moments[$index], $moments[$index + 1]];
+            $this->gallery['moments'] = array_values($moments);
+            $this->invitation->update(['gallery_data' => $this->gallery]);
+            $this->dispatch('notify', message: 'Foto dipindah ke bawah.', type: 'success');
+        }
+    }
+
     // --- MAIN ACTION: SAVE ---
     public function save()
     {
