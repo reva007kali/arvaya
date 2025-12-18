@@ -5,6 +5,7 @@ namespace App\Livewire\Frontend;
 use Livewire\Component;
 use App\Models\Invitation;
 use App\Models\Guest;
+use App\Notifications\GuestRsvpNotification;
 
 class RsvpForm extends Component
 {
@@ -56,8 +57,8 @@ class RsvpForm extends Component
             // Di sini kita buat guest baru tapi tanpa slug unik (atau generate random)
             // Agar dashboard tetap rapi, kita bisa skip create guest dan langsung simpan pesan di GuestBook
             // Tapi untuk fitur RSVP, idealnya masuk tabel Guest.
-            
-            Guest::create([
+
+            $this->guest = Guest::create([
                 'invitation_id' => $this->invitation->id,
                 'name' => $this->name,
                 'slug' => \Illuminate\Support\Str::uuid(), // Slug acak internal
@@ -67,6 +68,17 @@ class RsvpForm extends Component
                 'category' => 'Umum',
                 'message_from_guest' => $this->message,
             ]);
+        }
+
+        // --- DISPATCH NOTIFICATION ---
+        // Notify the invitation owner (User)
+        if ($this->invitation->user) {
+            $this->invitation->user->notify(new GuestRsvpNotification(
+                $this->name,
+                $this->rsvp_status,
+                $this->invitation->title,
+                $this->invitation->id
+            ));
         }
 
         $this->isSubmitted = true;

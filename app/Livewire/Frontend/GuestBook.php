@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Invitation;
 use App\Models\Message;
 use App\Models\Guest;
+use App\Notifications\NewMessageNotification;
 
 class GuestBook extends Component
 {
@@ -18,7 +19,7 @@ class GuestBook extends Component
     // Form
     public $sender_name = '';
     public $content = '';
-    
+
     // Config
     protected $paginationTheme = 'tailwind';
 
@@ -26,8 +27,8 @@ class GuestBook extends Component
     {
         $this->invitation = $invitation;
         $this->guest = $guest;
-        
-        if($guest) {
+
+        if ($guest) {
             $this->sender_name = $guest->name;
         }
     }
@@ -39,16 +40,25 @@ class GuestBook extends Component
             'content' => 'required|string|max:500',
         ]);
 
-        Message::create([
+        $msg = Message::create([
             'invitation_id' => $this->invitation->id,
             'guest_id' => $this->guest?->id,
             'sender_name' => $this->sender_name,
             'content' => $this->content,
         ]);
 
+        // --- DISPATCH NOTIFICATION ---
+        if ($this->invitation->user) {
+            $this->invitation->user->notify(new NewMessageNotification(
+                $this->sender_name,
+                $this->content,
+                $this->invitation->title,
+                $this->invitation->id
+            ));
+        }
+
         $this->content = ''; // Reset pesan
-        // $this->resetPage(); // Kembali ke halaman 1 (opsional)
-        
+
         session()->flash('msg_status', 'Ucapan berhasil dikirim!');
     }
 

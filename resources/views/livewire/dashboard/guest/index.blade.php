@@ -10,7 +10,7 @@
                 <span>/</span>
                 <span>Management</span>
             </div>
-            <h2 class="font-serif font-bold text-3xl text-[#E0E0E0]">Buku Tamu Eksklusif</h2>
+            <h2 class="font-serif font-bold text-3xl text-[#E0E0E0]">Buku Tamu</h2>
             <p class="text-[#A0A0A0] text-sm mt-1">Undangan: <span
                     class="font-semibold italic text-[#D4AF37]">{{ $invitation->title }}</span></p>
         </div>
@@ -19,11 +19,11 @@
         <div class="flex gap-3">
             <div class="bg-[#1a1a1a] border border-[#333333] px-4 py-2 rounded-xl shadow-sm text-center">
                 <p class="text-[10px] text-[#A0A0A0] font-bold uppercase">Total</p>
-                <p class="text-lg font-serif font-bold text-[#E0E0E0]">{{ $guests->total() }}</p>
+                <p class="text-2xl font-sans font-bold text-[#E0E0E0]">{{ $guests->total() }}</p>
             </div>
             <div class="bg-[#1a1a1a] border border-[#333333] px-4 py-2 rounded-xl shadow-sm text-center">
                 <p class="text-[10px] text-[#A0A0A0] font-bold uppercase">Hadir</p>
-                <p class="text-lg font-serif font-bold text-green-500">
+                <p class="text-2xl font-sans font-bold text-green-500">
                     {{ $invitation->guests()->where('rsvp_status', 1)->count() }}
                 </p>
             </div>
