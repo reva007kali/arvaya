@@ -106,4 +106,49 @@ Only output JSON. No markdown.";
             return ['type' => 'error', 'display_text' => 'Gagal terhubung ke server AI.'];
         }
     }
+
+    /**
+     * Chat with Arvaya (AI Marriage Consultant)
+     */
+    public static function chatArvaya($message, $history = [])
+    {
+        $apiKey = env('OPENAI_API_KEY');
+        if (empty($apiKey)) {
+            return "Error: API Key OpenAI belum disetting.";
+        }
+
+        // System Prompt Persona
+        $systemMessage = [
+            'role' => 'system',
+            'content' => "Anda adalah Arvaya, seorang konsultan pernikahan dan psikolog keluarga yang ramah, berwawasan luas, dan empatik. 
+            Anda memberikan saran tentang pernikahan, hubungan, dan persiapan pernikahan. 
+            Anda menghormati semua agama, namun memiliki pemahaman mendalam tentang prinsip pernikahan dalam Islam jika ditanya.
+            Gaya bicara Anda natural, suportif, dan seperti teman yang profesional. 
+            Jawablah selalu dalam Bahasa Indonesia yang baik namun santai."
+        ];
+
+        // Format history for API
+        // $history structure: [['role' => 'user', 'content' => '...'], ['role' => 'assistant', 'content' => '...']]
+        $messages = array_merge([$systemMessage], $history);
+        $messages[] = ['role' => 'user', 'content' => $message];
+
+        try {
+            $response = Http::withToken($apiKey)->timeout(30)->post('https://api.openai.com/v1/chat/completions', [
+                'model' => 'gpt-4o-mini',
+                'messages' => $messages,
+                'temperature' => 0.7,
+                'max_tokens' => 500,
+            ]);
+
+            if ($response->successful()) {
+                return $response->json()['choices'][0]['message']['content'];
+            } else {
+                Log::error('OpenAI Chat Error: ' . $response->body());
+                return "Maaf, Arvaya sedang istirahat sebentar. Coba lagi nanti ya.";
+            }
+        } catch (\Exception $e) {
+            Log::error('OpenAI Chat Connection Error: ' . $e->getMessage());
+            return "Gagal terhubung ke Arvaya.";
+        }
+    }
 }

@@ -121,4 +121,27 @@ class Index extends Component
         }
         $this->dispatch('notify', message: "Import kontak: {$imported}", type: 'success');
     }
+
+    public function broadcast()
+    {
+        $guests = $this->invitation->guests()->whereNotNull('phone')->where('phone', '!=', '')->get();
+        $urls = [];
+
+        foreach ($guests as $guest) {
+            $link = route('invitation.show', [
+                'slug' => $this->invitation->slug,
+                'to' => $guest->slug,
+            ]);
+
+            $msg = "Kepada Yth. {$guest->name},\n\n";
+            $msg .= "Tanpa mengurangi rasa hormat, kami bermaksud mengundang Anda untuk hadir di acara pernikahan kami.\n\n";
+            $msg .= "Info lengkap & RSVP:\n{$link}\n\n";
+            $msg .= "Merupakan suatu kehormatan bagi kami apabila Anda berkenan hadir.\nTerima kasih.";
+
+            $urls[] = "https://wa.me/{$guest->phone}?text=" . urlencode($msg);
+        }
+
+        $this->dispatch('broadcast-wa', urls: $urls);
+        $this->dispatch('notify', message: 'Membuka WhatsApp untuk ' . count($urls) . ' tamu...', type: 'info');
+    }
 }

@@ -442,6 +442,26 @@ class Edit extends Component
         }
     }
 
+    public function updatedNewMoments()
+    {
+        $this->validate([
+            'newMoments.*' => 'image|max:10240', // 10MB max
+        ]);
+
+        foreach ($this->newMoments as $photo) {
+            $this->gallery['moments'][] = $this->processImage($photo, 1000);
+        }
+
+        // Update Database Immediately
+        $this->invitation->update(['gallery_data' => $this->gallery]);
+
+        // Reset
+        $this->reset('newMoments');
+
+        // Notify
+        $this->dispatch('notify', message: 'Foto berhasil disimpan otomatis!', type: 'success');
+    }
+
     // --- MAIN ACTION: SAVE ---
     public function save()
     {
@@ -455,8 +475,12 @@ class Edit extends Component
         if ($this->newBride)
             $this->gallery['bride'] = $this->processImage($this->newBride, 800);
 
-        foreach ($this->newMoments as $photo) {
-            $this->gallery['moments'][] = $this->processImage($photo, 1000);
+        // Note: newMoments processed automatically in updatedNewMoments
+        // But keep fallback just in case
+        if (!empty($this->newMoments)) {
+            foreach ($this->newMoments as $photo) {
+                $this->gallery['moments'][] = $this->processImage($photo, 1000);
+            }
         }
 
         // 2. TENTUKAN PAKET & HARGA (CORE LOGIC)

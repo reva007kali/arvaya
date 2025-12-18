@@ -50,6 +50,10 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
 
     Route::get('/', DashboardIndex::class)->name('index');
 
+    Route::get('/profile', \App\Livewire\Dashboard\Profile\Edit::class)->name('profile');
+
+    Route::get('/tips', \App\Livewire\Dashboard\Tips\Index::class)->name('tips');
+
     Route::get('/create', InvitationCreate::class)->name('create');
 
     Route::get('/{invitation}/checkout', Checkout::class)->name('invitation.checkout');

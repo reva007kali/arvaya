@@ -8,7 +8,8 @@
 
     <title>{{ config('app.name', 'Arvaya De Aure') }} - Dashboard</title>
 
-    {{-- <link rel="icon" href="/favicon.ico" sizes="any"> --}}
+    {{--
+    <link rel="icon" href="/favicon.ico" sizes="any"> --}}
     <link rel="icon" href="/logo.png" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/logo.png">
 
@@ -22,49 +23,49 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
 
-<body class="font-sans h-screen flex antialiased bg-white text-[#5E4926]" x-data="{ sidebarOpen: false }" x-cloak>
+<body class="font-sans h-screen flex antialiased bg-[#121212] text-[#E0E0E0]" x-data="{ sidebarOpen: false }" x-cloak>
 
     <!-- MOBILE OVERLAY BACKDROP -->
-    <!-- Muncul hanya di mobile saat menu dibuka -->
     <div x-show="sidebarOpen" @click="sidebarOpen = false"
         x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300"
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-40 bg-[#5E4926]/20 lg:hidden backdrop-blur-sm">
+        class="fixed inset-0 z-40 bg-black/50 lg:hidden backdrop-blur-sm">
     </div>
 
     <!-- SIDEBAR -->
-    <!--
-         Mobile: Fixed position, z-50 (paling atas).
-         Desktop (lg): Static position (ikut aliran flex), z-auto.
-         shrink-0: Agar lebar sidebar tidak mengecil.
-    -->
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed inset-y-0 left-0 z-50 w-72 bg-arvaya-200 border-r border-[#E6D9B8] transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:inset-auto shrink-0 flex flex-col shadow-xl lg:shadow-none">
+        class="fixed inset-y-0 left-0 z-50 w-72 bg-[#1a1a1a] border-r border-[#333333] transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:inset-auto shrink-0 flex flex-col shadow-xl lg:shadow-none">
 
         <!-- Decoration Blobs (Hiasan) -->
         <div
-            class="absolute -top-10 -left-10 w-40 h-40 bg-[#E6D9B8] rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none">
+            class="absolute -top-10 -left-10 w-40 h-40 bg-[#D4AF37] rounded-full mix-blend-overlay filter blur-3xl opacity-10 pointer-events-none">
         </div>
         <div
-            class="absolute bottom-0 -right-10 w-56 h-56 bg-[#B89760] rounded-full mix-blend-multiply filter blur-3xl opacity-10 pointer-events-none">
+            class="absolute bottom-0 -right-10 w-56 h-56 bg-[#D4AF37] rounded-full mix-blend-overlay filter blur-3xl opacity-5 pointer-events-none">
         </div>
+        <!-- Decoration Blobs (Hiasan) -->
+
 
         <!-- LOGO HEADER -->
-        <div class="flex items-center justify-center h-20 border-b border-[#E6D9B8]/50 relative z-10 shrink-0 bg-white">
+        <div
+            class="flex items-center justify-center h-20 border-b border-[#333333] relative z-10 shrink-0 bg-[#1a1a1a]">
             <a href="{{ route('dashboard.index') }}" class="flex items-center gap-3 group px-4">
                 <div
-                    class="w-10 h-10 rounded-full border border-[#B89760] flex items-center justify-center text-[#B89760] group-hover:bg-[#B89760] group-hover:text-white transition duration-500 shadow-sm">
+                    class="w-10 h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-[#121212] transition duration-500 shadow-sm">
                     <span class="font-display font-bold text-lg">A</span>
                 </div>
                 <div class="flex flex-col text-left">
-                    <span class="font-serif font-bold text-xl tracking-widest leading-none text-[#5E4926]">ARVAYA</span>
-                    <span class="text-[10px] uppercase tracking-[0.3em] text-[#C6AC80]">de aure</span>
+                    <span class="font-serif font-bold text-xl tracking-widest leading-none text-[#D4AF37]">ARVAYA</span>
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-[#888888]">de aure</span>
                 </div>
             </a>
         </div>
@@ -77,44 +78,44 @@
 
                 <a href="{{ route('dashboard.index') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-           {{ request()->routeIs('dashboard.index') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                                                                       {{ request()->routeIs('dashboard.index') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                     <div class="w-6 text-center"><i class="fa-solid fa-house"></i></div>
                     <span class="font-medium text-sm tracking-wide">Dashboard</span>
                 </a>
 
-                <p class="px-4 text-[10px] font-bold text-[#C6AC80] uppercase tracking-widest mb-2">Administrator</p>
+                <p class="px-4 text-[10px] font-bold text-[#666] uppercase tracking-widest mb-2">Administrator</p>
 
                 <a href="{{ route('admin.index') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-           {{ request()->routeIs('admin.index') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                                                                       {{ request()->routeIs('admin.index') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                     <div class="w-6 text-center"><i class="fa-solid fa-chart-line"></i></div>
                     <span class="font-medium text-sm tracking-wide">Overview</span>
                 </a>
 
                 <a href="{{ route('admin.users') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-           {{ request()->routeIs('admin.users') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                                                                       {{ request()->routeIs('admin.users') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                     <div class="w-6 text-center"><i class="fa-solid fa-users-gear"></i></div>
                     <span class="font-medium text-sm tracking-wide">Kelola User</span>
                 </a>
 
                 <a href="{{ route('admin.invitations') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-           {{ request()->routeIs('admin.invitations') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                                                                       {{ request()->routeIs('admin.invitations') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                     <div class="w-6 text-center"><i class="fa-solid fa-list-check"></i></div>
                     <span class="font-medium text-sm tracking-wide">Semua Undangan</span>
                 </a>
 
                 <a href="{{ route('admin.templates') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-   {{ request()->routeIs('admin.templates') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                                                               {{ request()->routeIs('admin.templates') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                     <div class="w-6 text-center"><i class="fa-solid fa-swatchbook"></i></div>
                     <span class="font-medium text-sm tracking-wide">Kelola Template</span>
                 </a>
 
                 <a href="{{ route('admin.transactions') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-   {{ request()->routeIs('admin.transactions') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                                                               {{ request()->routeIs('admin.transactions') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                     <div class="w-6 text-center"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                     <span class="font-medium text-sm tracking-wide">Transaksi</span>
 
@@ -129,32 +130,32 @@
 
                 @if (request()->route('invitation'))
                     {{-- Menu Edit Undangan (Sama seperti kode sebelumnya) --}}
-                    <p class="px-4 text-[10px] font-bold text-[#7C6339] uppercase tracking-widest mb-2">Manage Undangan
+                    <p class="px-4 text-[10px] font-bold text-[#666] uppercase tracking-widest mb-2">Manage Undangan
                     </p>
 
 
                     <a href="{{ route('dashboard.invitation.edit', request()->route('invitation')) }}" wire:navigate
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.invitation.edit') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.invitation.edit') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                         <div class="w-6 text-center"><i class="fa-solid fa-pen-to-square"></i></div>
                         <span class="font-medium text-sm tracking-wide">Edit Informasi</span>
                     </a>
 
                     <a href="{{ route('dashboard.guests.index', request()->route('invitation')) }}" wire:navigate
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.guests.*') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.guests.*') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                         <div class="w-6 text-center"><i class="fa-solid fa-users"></i></div>
                         <span class="font-medium text-sm tracking-wide">Data Tamu</span>
                     </a>
 
                     <a href="{{ route('dashboard.messages.index', request()->route('invitation')) }}" wire:navigate
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.messages.*') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.messages.*') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                         <div class="w-6 text-center"><i class="fa-solid fa-envelope-open-text"></i></div>
                         <span class="font-medium text-sm tracking-wide">Ucapan & Doa</span>
                     </a>
                 @else
                     <a href="{{ route('dashboard.create') }}" wire:navigate
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group hover:bg-[#F9F7F2] hover:text-[#B89760] text-[#5E4926]">
-                        <div class="w-6 text-center"><i
-                                class="fa-solid fa-plus text-[#C6AC80] group-hover:text-[#B89760]"></i></div>
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group hover:bg-[#252525] hover:text-[#D4AF37] text-[#A0A0A0]">
+                        <div class="w-6 text-center"><i class="fa-solid fa-plus text-[#666] group-hover:text-[#D4AF37]"></i>
+                        </div>
                         <span class="font-medium text-sm tracking-wide">Buat Undangan Baru</span>
                     </a>
                 @endif
@@ -162,39 +163,39 @@
             @else
                 <a href="{{ route('dashboard.index') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-           {{ request()->routeIs('dashboard.index') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                                                               {{ request()->routeIs('dashboard.index') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                     <div class="w-6 text-center"><i class="fa-solid fa-house"></i></div>
                     <span class="font-medium text-sm tracking-wide">Dashboard</span>
                 </a>
 
                 <div class="pt-6 pb-2">
-                    <p class="px-4 text-[10px] font-bold text-[#7C6339] uppercase tracking-widest">Project Space</p>
+                    <p class="px-4 text-[10px] font-bold text-[#666] uppercase tracking-widest">Project Space</p>
                 </div>
 
                 @if (request()->route('invitation'))
                     {{-- Menu Edit Undangan (Sama seperti kode sebelumnya) --}}
                     <a href="{{ route('dashboard.invitation.edit', request()->route('invitation')) }}" wire:navigate
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.invitation.edit') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.invitation.edit') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                         <div class="w-6 text-center"><i class="fa-solid fa-pen-to-square"></i></div>
                         <span class="font-medium text-sm tracking-wide">Edit Informasi</span>
                     </a>
 
                     <a href="{{ route('dashboard.guests.index', request()->route('invitation')) }}" wire:navigate
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.guests.*') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.guests.*') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                         <div class="w-6 text-center"><i class="fa-solid fa-users"></i></div>
                         <span class="font-medium text-sm tracking-wide">Data Tamu</span>
                     </a>
 
                     <a href="{{ route('dashboard.messages.index', request()->route('invitation')) }}" wire:navigate
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.messages.*') ? 'bg-[#F9F7F2] shadow-sm border border-[#E6D9B8] text-[#B89760]' : 'text-[#5E4926] hover:bg-[#F9F7F2] hover:text-[#B89760]' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group {{ request()->routeIs('dashboard.messages.*') ? 'bg-[#252525] shadow-sm border border-[#D4AF37]/30 text-[#D4AF37]' : 'text-[#A0A0A0] hover:bg-[#252525] hover:text-[#D4AF37]' }}">
                         <div class="w-6 text-center"><i class="fa-solid fa-envelope-open-text"></i></div>
                         <span class="font-medium text-sm tracking-wide">Ucapan & Doa</span>
                     </a>
                 @else
                     <a href="{{ route('dashboard.create') }}" wire:navigate
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group hover:bg-[#F9F7F2] hover:text-[#B89760] text-[#5E4926]">
-                        <div class="w-6 text-center"><i
-                                class="fa-solid fa-plus text-[#C6AC80] group-hover:text-[#B89760]"></i></div>
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group hover:bg-[#252525] hover:text-[#D4AF37] text-[#A0A0A0]">
+                        <div class="w-6 text-center"><i class="fa-solid fa-plus text-[#666] group-hover:text-[#D4AF37]"></i>
+                        </div>
                         <span class="font-medium text-sm tracking-wide">Buat Undangan Baru</span>
                     </a>
                 @endif
@@ -204,18 +205,23 @@
         </nav>
 
         <!-- USER PROFILE FOOTER -->
-        <div class="border-t border-[#E6D9B8]/50 p-5 bg-[#F9F7F2] relative z-10 shrink-0">
+        <div class="border-t border-[#333333] p-5 bg-[#1a1a1a] relative z-10 shrink-0">
             <div class="flex items-center gap-3">
-                <div
-                    class="w-10 h-10 rounded-full bg-gradient-to-br from-[#E6D9B8] to-[#C6AC80] flex items-center justify-center text-white font-serif font-bold text-lg shadow-sm shrink-0">
-                    {{ substr(auth()->user()->name, 0, 1) }}
-                </div>
+                @if (auth()->user()->avatar)
+                    <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}"
+                        class="w-10 h-10 rounded-full object-cover border border-[#D4AF37] shadow-sm shrink-0">
+                @else
+                    <div
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B4912F] flex items-center justify-center text-[#121212] font-serif font-bold text-lg shadow-sm shrink-0">
+                        {{ substr(auth()->user()->name, 0, 1) }}
+                    </div>
+                @endif
                 <div class="overflow-hidden min-w-0">
-                    <p class="text-sm font-bold text-[#5E4926] truncate">{{ auth()->user()->name }}</p>
+                    <p class="text-sm font-bold text-[#E0E0E0] truncate">{{ auth()->user()->name }}</p>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
-                            class="text-xs text-[#C6AC80] hover:text-[#B89760] transition flex items-center gap-1">
+                            class="text-xs text-[#888] hover:text-[#D4AF37] transition flex items-center gap-1">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
                         </button>
                     </form>
@@ -230,32 +236,44 @@
          flex-col: Mengatur header dan konten secara vertikal.
          overflow-hidden: Agar scroll hanya terjadi di dalam area konten (bukan seluruh window).
     -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-y-hidden h-svh bg-white">
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-hidden h-svh bg-arvaya-bg">
 
         <!-- TOP HEADER -->
-        <header
-            class="h-20 flex items-center justify-between px-6 lg:px-10 bg-arvaya-200 sticky top-0 z-20 border-b border-[#F2ECDC] shrink-0">
+        <header class="h-28 flex items-center justify-between px-6 lg:px-10 bg-arvaya-bg sticky top-0 z-20 shrink-0">
             <div class="flex items-center gap-4">
-                <!-- Hamburger Button (Mobile Only) -->
-                <button @click="sidebarOpen = true"
-                    class="lg:hidden text-[#C6AC80] hover:text-[#B89760] focus:outline-none transition p-1">
-                    <i class="fa-solid fa-bars-staggered text-2xl"></i>
-                </button>
-
+                @if (auth()->user()->avatar)
+                    <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}"
+                        class="w-10 h-10 rounded-full object-cover border border-[#D4AF37] shadow-sm shrink-0">
+                @else
+                    <div
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B4912F] flex items-center justify-center text-[#121212] font-serif font-bold text-lg shadow-sm shrink-0">
+                        {{ substr(auth()->user()->name, 0, 1) }}
+                    </div>
+                @endif
                 <!-- Page Title -->
-                <h2 class="font-serif font-bold lg:text-4xl text-2xl text-arvaya-700 tracking-tight">
-                    {{ $header ?? 'Dashboard' }}
+                <h2 class="font-sans lg:text-4xl text-xl text-white tracking-tight">
+                    Hello, <span class="text-arvaya-300">{{ explode(' ', auth()->user()->name)[0] }}</span>
+                    <span class="text-sm text-[#888] block">{{ auth()->user()->email }}</span>
                 </h2>
             </div>
 
             <!-- Right Actions -->
             <div class="flex items-center gap-3">
-                {{ $actions ?? '' }}
+                <!-- Hamburger Button (Mobile Only) -->
+                <button @click="sidebarOpen = true"
+                    class="lg:hidden text-[#888] hover:text-[#D4AF37] focus:outline-none transition p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect x="1" y="1" width="10" height="10" rx="3" fill="white" />
+                        <rect x="13" y="1" width="10" height="10" rx="3" fill="white" />
+                        <rect x="1" y="13" width="10" height="10" rx="3" fill="white" />
+                        <rect x="13" y="13" width="10" height="10" rx="3" fill="white" />
+                    </svg>
+                </button>
             </div>
         </header>
 
         <!-- SCROLLABLE CONTENT -->
-        <main class="flex-1 overflow-y-auto p-4 lg:p-10 relative custom-scrollbar">
+        <main class="flex-1 overflow-y-auto p-4 lg:p-10 pb-24 lg:pb-10 relative custom-scrollbar">
             <!-- Toast Notifications -->
             <x-notification-toast />
 
@@ -265,6 +283,56 @@
             </div>
         </main>
     </div>
+
+    <!-- MOBILE BOTTOM NAVBAR (FIXED) -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 h-[80px]">
+        {{-- Background with Cutout --}}
+        <div class="absolute inset-0 bg-[#1a1a1a] shadow-[0_-5px_20px_rgba(0,0,0,0.5)] border-t border-[#333333]"
+            style="-webkit-mask-image: radial-gradient(circle 38px at top center, transparent 36px, black 37px); mask-image: radial-gradient(circle 38px at top center, transparent 36px, black 37px);">
+        </div>
+
+        {{-- Nav Items Container --}}
+        <div class="relative h-full flex justify-between items-center px-10 pb-2">
+
+            {{-- Left Group --}}
+            <div class="flex  gap-12">
+                <a href="{{ route('dashboard.create') }}" wire:navigate
+                    class="flex flex-col items-center gap-1 text-arvaya-400 hover:text-arvaya-300 transition">
+                    <i class="fa-solid fa-circle-plus text-xl"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-wider">Add</span>
+                </a>
+                <button class="flex flex-col items-center gap-1 text-arvaya-400 hover:text-arvaya-300 transition">
+                    <i class="fa-solid fa-bell text-xl"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-wider">Notif</span>
+                </button>
+            </div>
+
+            {{-- Center Floating Button (Home) --}}
+            <div class="absolute -top-6 left-1/2 -translate-x-1/2">
+                <a href="{{ route('dashboard.index') }}" wire:navigate
+                    class="w-14 h-14 rounded-full bg-gradient-to-br from-arvaya-400 to-arvaya-500 flex items-center justify-center text-[#121212] shadow-[0_0_15px_rgba(212,175,55,0.4)] border-4 border-[#121212] transform transition active:scale-95">
+                    <i class="fa-solid fa-house text-xl"></i>
+                </a>
+            </div>
+
+            {{-- Right Group --}}
+            <div class="flex gap-12">
+                <a href="{{ route('dashboard.tips') }}" wire:navigate
+                    class="flex flex-col items-center gap-1 text-arvaya-400 hover:text-arvaya-300 transition">
+                    <i class="fa-solid fa-heart text-xl"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-wider">Tips</span>
+                </a>
+                <a href="{{ route('dashboard.profile') }}" wire:navigate
+                    class="flex flex-col items-center gap-1 text-arvaya-400 hover:text-arvaya-300 transition">
+                    <i class="fa-solid fa-user text-xl"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-wider">Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </body>
 
 </html>
