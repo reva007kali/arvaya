@@ -84,7 +84,7 @@
             {{-- MENU NAVIGATION (Full Width on Mobile, Grid on Desktop) --}}
             <div class="lg:col-span-12">
                 <div>
-                    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-5">
                         @php
                             $menus = [
                                 ['id' => 'couple_bio', 'icon' => 'fa-user-group', 'label' => 'Mempelai'],
@@ -98,27 +98,24 @@
                         @endphp
 
                         @foreach ($menus as $menu)
-                                            <button wire:click="openModal('{{ $menu['id'] }}')" class="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-all duration-300 border
-                                                                        {{ $activeTab === $menu['id']
-                            ? 'bg-[#1a1a1a] border-[#D4AF37] shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]'
-                            : 'bg-[#1a1a1a] border-[#333333] hover:border-[#D4AF37] hover:shadow-lg' }}">
-                                                <div
-                                                    class="text-xl transition-all duration-300
-                                                                            {{ $activeTab === $menu['id'] ? 'text-[#D4AF37]' : 'text-arvaya-500 md:text-[#888] md:group-hover:text-[#D4AF37]' }}">
+                                            <button wire:click="openModal('{{ $menu['id'] }}')"
+                                                class="flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-300 border border-[#1a1a1a]
+                                                                    {{ $activeTab === $menu['id']
+                            ? 'bg-[#1a1a1a] text-arvaya-400 shadow-[inset_5px_5px_10px_#0d0d0d,inset_-5px_-5px_10px_#272727]'
+                            : 'bg-[#1a1a1a] text-arvaya-400 shadow-[5px_5px_10px_#0d0d0d,-5px_-5px_10px_#272727] hover:text-[#D4AF37] hover:shadow-[inset_5px_5px_10px_#0d0d0d,inset_-5px_-5px_10px_#272727] hover:translate-y-0.5' }}">
+                                                <div class="text-xl transition-all duration-300 transform group-hover:scale-110">
                                                     <i class="fa-solid {{ $menu['icon'] }}"></i>
                                                 </div>
-                                                <span
-                                                    class="text-[10px] font-bold uppercase tracking-wider {{ $activeTab === $menu['id'] ? 'text-[#D4AF37]' : 'text-[#A0A0A0]' }}">{{ $menu['label'] }}</span>
+                                                <span class="text-[10px] font-bold uppercase tracking-wider">{{ $menu['label'] }}</span>
                                             </button>
                         @endforeach
 
                         <a href="{{ route('dashboard.guests.index', $invitation->id) }}" wire:navigate
-                            class="flex flex-col items-center justify-center text-center gap-2 p-4 rounded-2xl transition-all duration-300 border bg-[#1a1a1a] border-[#333333] hover:border-[#D4AF37] hover:shadow-lg">
-                            <div class="text-xl text-arvaya-500 md:text-[#888] transition-all duration-300">
+                            class="flex flex-col items-center justify-center text-center gap-3 p-4 rounded-2xl transition-all duration-300 border border-[#1a1a1a] bg-[#1a1a1a] text-arvaya-400 shadow-[5px_5px_10px_#0d0d0d,-5px_-5px_10px_#272727] hover:text-[#D4AF37] hover:shadow-[inset_5px_5px_10px_#0d0d0d,inset_-5px_-5px_10px_#272727] hover:translate-y-0.5">
+                            <div class="text-xl transition-all duration-300">
                                 <i class="fa-solid fa-user-group"></i>
                             </div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#A0A0A0]">Kelola
-                                Tamu</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider">Kelola Tamu</span>
                         </a>
                     </div>
                 </div>
@@ -773,10 +770,11 @@
 
                                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                                     @foreach ($availableTemplates as $tpl)
-                                        <div class="group cursor-pointer rounded-xl overflow-hidden" wire:click="selectTemplate('{{ $tpl->slug }}')">
+                                        <div class="group cursor-pointer rounded-xl overflow-hidden"
+                                            wire:click="selectTemplate('{{ $tpl->slug }}')">
                                             <div
                                                 class="aspect-[9/16] overflow-hidden relative border-2 transition-all
-                                                                                                                                                                                                                                    {{ $theme_template == $tpl->slug ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-xl' : 'border-[#333333] hover:border-[#D4AF37]/50 hover:shadow-lg' }}">
+                                                                                                                                                                                                                                                {{ $theme_template == $tpl->slug ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-xl' : 'border-[#333333] hover:border-[#D4AF37]/50 hover:shadow-lg' }}">
                                                 @if ($tpl->thumbnail)
                                                     <img src="{{ asset('storage/' . $tpl->thumbnail) }}" loading="lazy"
                                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition">
@@ -790,7 +788,7 @@
                                                 <div class="absolute top-2 left-2">
                                                     <span
                                                         class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full shadow-sm
-                                                                                                                                                                                                                                            {{ $tpl->tier == 'exclusive' ? 'bg-[#2D2418] text-[#D4AF37]' : ($tpl->tier == 'premium' ? 'bg-[#D4AF37] text-[#121212]' : 'bg-[#1a1a1a] text-[#E0E0E0]') }}">
+                                                                                                                                                                                                                                                        {{ $tpl->tier == 'exclusive' ? 'bg-[#2D2418] text-[#D4AF37]' : ($tpl->tier == 'premium' ? 'bg-[#D4AF37] text-[#121212]' : 'bg-[#1a1a1a] text-[#E0E0E0]') }}">
                                                         {{ $tpl->tier }}
                                                     </span>
                                                 </div>
@@ -820,11 +818,11 @@
 
                                 <div class="mt-4" x-data
                                     x-init="const observer = new IntersectionObserver((entries) => {
-                                                                                                                                                            entries.forEach(entry => {
-                                                                                                                                                                if (entry.isIntersecting) { $wire.loadMoreTemplates() }
-                                                                                                                                                            });
-                                                                                                                                                        }, { root: null, threshold: 1 });
-                                                                                                                                                        observer.observe($refs.sentinel);">
+                                                                                                                                                                    entries.forEach(entry => {
+                                                                                                                                                                        if (entry.isIntersecting) { $wire.loadMoreTemplates() }
+                                                                                                                                                                    });
+                                                                                                                                                                }, { root: null, threshold: 1 });
+                                                                                                                                                                observer.observe($refs.sentinel);">
                                     <div x-ref="sentinel" class="h-6"></div>
                                     @unless ($hasMoreTemplates)
                                         <p class="text-center text-[10px] text-[#A0A0A0] mt-2">Semua desain telah dimuat
