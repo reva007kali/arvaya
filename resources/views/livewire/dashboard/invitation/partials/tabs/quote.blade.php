@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto py-8 relative" x-data="{ 
+<div class="max-w-4xl mx-auto relative" x-data="{ 
     scrollToResult() {
         setTimeout(() => {
             const el = document.getElementById('result-section');
@@ -34,7 +34,7 @@ x-on:scroll-to-result.window="scrollToResult()">
                             : 'bg-[#252525] text-[#E0E0E0] rounded-tl-none border border-[#333333]' }}">
                         
                        <div class="prose prose-invert prose-sm leading-snug whitespace-pre-wrap font-sans text-sm">
-                           {!! nl2br(e(preg_replace('/\|\|\|.*?\|\|\|/s', '', $msg['content']))) !!}
+                           {!! nl2br(e(preg_replace('/\|.*?\|/s', '', $msg['content']))) !!}
                        </div>
 
                        @if($msg['role'] === 'assistant' && $index > 0)
@@ -68,16 +68,16 @@ x-on:scroll-to-result.window="scrollToResult()">
         
         <!-- Chat Input -->
         <div class="p-4 bg-[#252525] border-t border-[#333333] shrink-0">
-            <form wire:submit.prevent="sendChatMessage" class="relative">
+            <form wire:submit.prevent="sendChatMessage" class="relative flex gap-x-2">
                 <input type="text" wire:model="chatInput" 
-                    placeholder="Ketik pesan... (Contoh: 'Buatkan pantun lucu', 'Ayat tentang jodoh')" 
-                    class="w-full pl-6 pr-16 py-4 rounded-2xl bg-[#1a1a1a] border border-[#333333] text-[#E0E0E0] text-sm focus:border-[#D4AF37] focus:ring-[#D4AF37] placeholder-[#555] shadow-inner transition-all">
+                    placeholder="Ketik pesan... (Contoh 'Ayat tentang jodoh')" 
+                    class="w-full pl-6 py-4 rounded-2xl bg-[#1a1a1a] border border-[#333333] text-[#E0E0E0] text-sm focus:border-[#D4AF37] focus:ring-[#D4AF37] placeholder-[#555] shadow-inner transition-all">
                 
                 <button type="submit" 
-                    class="absolute right-2 top-2 bottom-2 w-12 bg-[#D4AF37] text-[#121212] rounded-xl hover:bg-[#B4912F] transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-md" 
+                    class=" w-12 bg-[#D4AF37] text-[#121212] rounded-full hover:bg-[#B4912F] transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-md" 
                     wire:loading.attr="disabled"
                     wire:target="sendChatMessage">
-                    <i class="fa-solid fa-paper-plane"></i>
+                    <i class="fa-solid fa-paper-plane" wire:loading.class="fa-spinner fa-spin" wire:target="sendChatMessage"></i>
                 </button>
             </form>
             <div class="mt-3 flex gap-2 overflow-x-auto pb-1 hide-scrollbar">

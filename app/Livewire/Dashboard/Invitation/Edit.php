@@ -27,7 +27,7 @@ class Edit extends Component
     public Invitation $invitation;
     public $activeTab = null; // Tidak ada tab aktif saat halaman dimuat
     public $category = 'Wedding'; // Kategori Template (Wedding, Birthday, dll)
-    
+
     // Query String untuk Tab
     protected $queryString = ['activeTab'];
 
@@ -63,7 +63,7 @@ class Edit extends Component
     public $aiContentMode = 'quote';
     public $useAiQuote = false;
     public $quranPreset = '';
-    
+
     // Chat Logic
     public $chatMessages = [];
     public $chatInput = '';
@@ -84,18 +84,18 @@ class Edit extends Component
     {
         $this->activeTab = $tab;
         $this->modalOpen = true;
-        
+
         // Reset Wizard saat buka tab quote
         if ($tab === 'couple_quote') {
             // Default: Show Preview first. If empty, maybe show chat? 
             // Let's just default to useAiQuote=false (Preview Mode)
             // But if chat is empty, we can initialize it.
-            $this->useAiQuote = false; 
-            
+            $this->useAiQuote = false;
+
             if (empty($this->chatMessages)) {
                 $this->chatMessages[] = [
                     'role' => 'assistant',
-                    'content' => "Halo! 👋 Saya Arvaya, asisten penulis undangan Anda.\n\nBingung mau tulis kata sambutan apa? Ceritakan saja keinginan Anda! \n\nContoh: \"Buatkan kata-kata Islami tentang jodoh\" atau \"Pantun lucu buat undangan\"."
+                    'content' => "Halo! 👋 Saya Arvaya, asisten penulis undangan Anda.\nBingung mau tulis kata sambutan apa? Ceritakan saja keinginan Anda! \nContoh: \"Buatkan kata-kata Islami tentang jodoh\" atau \"Pantun lucu buat undangan\"."
                 ];
             }
         }
@@ -104,12 +104,12 @@ class Edit extends Component
     public function sendChatMessage()
     {
         $this->validate(['chatInput' => 'required|string|max:500']);
-        
+
         $userMsg = $this->chatInput;
         $this->chatMessages[] = ['role' => 'user', 'content' => $userMsg];
         $this->chatInput = '';
         $this->isChatting = true;
-        
+
         // Prepare history for API
         $history = [];
         foreach ($this->chatMessages as $msg) {
@@ -118,9 +118,9 @@ class Edit extends Component
                 $history[] = ['role' => $msg['role'], 'content' => $msg['content']];
             }
         }
-        
+
         $response = OpenAIService::chatQuoteGenerator($userMsg, $history);
-        
+
         $this->chatMessages[] = ['role' => 'assistant', 'content' => $response];
         $this->isChatting = false;
     }
@@ -128,7 +128,7 @@ class Edit extends Component
     public function applyQuoteFromChat($index)
     {
         $msg = $this->chatMessages[$index]['content'] ?? '';
-        
+
         // Extract JSON block
         if (preg_match('/\|\|\|(.*?)\|\|\|/s', $msg, $matches)) {
             $jsonStr = $matches[1];
@@ -163,7 +163,7 @@ class Edit extends Component
 
         $this->dispatch('notify', message: 'Kata-kata diterapkan! Silakan cek preview.', type: 'success');
         $this->useAiQuote = false; // Show preview
-        
+
         // Dispatch event for smooth scrolling to result
         $this->dispatch('scroll-to-result');
     }
@@ -220,7 +220,7 @@ class Edit extends Component
 
         // 3. Set Template Awal & Kategori
         $this->theme_template = $invitation->theme_template ?? 'default';
-        
+
         // Ambil kategori dari template yang dipakai
         $currentTemplate = Template::where('slug', $this->theme_template)->first();
         $this->category = $currentTemplate ? ($currentTemplate->category ?? 'Wedding') : 'Wedding';
@@ -318,7 +318,7 @@ class Edit extends Component
     {
         // Default Couple (Dynamic based on Category)
         $defaultCouple = [];
-        
+
         if ($this->category === 'Wedding' || $this->category === 'Engagement') {
             $defaultCouple = [
                 'groom' => ['nickname' => '', 'fullname' => '', 'father' => '', 'mother' => '', 'instagram' => ''],
@@ -327,35 +327,35 @@ class Edit extends Component
             ];
         } elseif ($this->category === 'Birthday') {
             $defaultCouple = [
-                'name' => '', 
-                'fullname' => '', 
-                'age' => '', 
+                'name' => '',
+                'fullname' => '',
+                'age' => '',
                 'birth_date' => '',
-                'father' => '', 
-                'mother' => '', 
+                'father' => '',
+                'mother' => '',
                 'instagram' => '',
                 'quote' => ''
             ];
         } elseif ($this->category === 'Aqiqah' || $this->category === 'Khitan') {
-             $defaultCouple = [
-                'child_name' => '', 
-                'child_fullname' => '', 
+            $defaultCouple = [
+                'child_name' => '',
+                'child_fullname' => '',
                 'birth_date' => '',
-                'father' => '', 
-                'mother' => '', 
+                'father' => '',
+                'mother' => '',
                 'quote' => ''
             ];
         } elseif ($this->category === 'Event') {
-             $defaultCouple = [
-                'title' => '', 
-                'organizer' => '', 
+            $defaultCouple = [
+                'title' => '',
+                'organizer' => '',
                 'description' => '',
                 'quote' => ''
             ];
         } else {
-             // Generic Fallback
-             $defaultCouple = [
-                'name' => '', 
+            // Generic Fallback
+            $defaultCouple = [
+                'name' => '',
                 'fullname' => '',
                 'description' => '',
                 'quote' => ''
@@ -465,8 +465,11 @@ class Edit extends Component
     }
 
     // --- HELPER: IMAGE PROCESSING ---
-    private function processImage($file, $width = 1200)
+    private function processImage($file, $width = 1600)
     {
+        // Increase memory limit to handle large files (up to 20MB)
+        ini_set('memory_limit', '512M');
+
         $manager = new ImageManager(new Driver());
         $filename = Str::random(40) . '.webp';
         $folder = 'invitations/' . $this->invitation->id;
@@ -480,7 +483,7 @@ class Edit extends Component
             $image->scaleDown(width: $width);
 
             // 3. Convert ke WebP (Quality 80%)
-            $encoded = $image->toWebp(quality: 60);
+            $encoded = $image->toWebp(quality: 80);
 
             // 4. Simpan ke Public Storage
             Storage::disk('public')->put($path, (string) $encoded);
@@ -526,6 +529,7 @@ class Edit extends Component
     {
         unset($this->gallery['moments'][$index]);
         $this->gallery['moments'] = array_values($this->gallery['moments']);
+        $this->invitation->update(['gallery_data' => $this->gallery]);
     }
 
     public function reorderMoments(array $order)
@@ -566,8 +570,73 @@ class Edit extends Component
         }
     }
 
+    // --- VALIDATION MESSAGES ---
+    protected function messages()
+    {
+        return [
+            'newCover.max' => 'Ukuran file terlalu besar (>10MB).',
+            'newGroom.max' => 'Ukuran file terlalu besar (>10MB).',
+            'newBride.max' => 'Ukuran file terlalu besar (>10MB).',
+            'newMoments.*.max' => 'Ukuran file terlalu besar (>10MB).',
+        ];
+    }
+
+    // --- HELPER: CHECK FILE SIZE STRICT ---
+    private function checkFileSizeStrict($file, $propertyName)
+    {
+        // 10MB = 10 * 1024 * 1024 = 10485760 bytes
+        if ($file && $file->getSize() > 10485760) {
+            // Reset property
+            $this->reset($propertyName);
+
+            // Dispatch Error Notification
+            $this->dispatch('notify', message: 'Ukuran foto terlalu besar (>10MB). Harap kompres foto Anda.', type: 'error');
+            return false;
+        }
+        return true;
+    }
+
+    // --- REALTIME VALIDATION FOR SINGLE FILES ---
+    public function updatedNewCover()
+    {
+        if ($this->checkFileSizeStrict($this->newCover, 'newCover')) {
+            $this->validate(['newCover' => 'image|max:10240']);
+        }
+    }
+
+    public function updatedNewGroom()
+    {
+        if ($this->checkFileSizeStrict($this->newGroom, 'newGroom')) {
+            $this->validate(['newGroom' => 'image|max:10240']);
+        }
+    }
+
+    public function updatedNewBride()
+    {
+        if ($this->checkFileSizeStrict($this->newBride, 'newBride')) {
+            $this->validate(['newBride' => 'image|max:10240']);
+        }
+    }
+
     public function updatedNewMoments()
     {
+        // Filter out large files
+        $validPhotos = [];
+        $hasError = false;
+
+        foreach ($this->newMoments as $photo) {
+            if ($photo->getSize() > 10485760) {
+                $hasError = true;
+            } else {
+                $validPhotos[] = $photo;
+            }
+        }
+
+        if ($hasError) {
+            $this->newMoments = $validPhotos; // Keep only valid ones
+            $this->dispatch('notify', message: 'Beberapa foto gagal diupload karena >10MB.', type: 'error');
+        }
+
         $this->validate([
             'newMoments.*' => 'image|max:10240', // 10MB max
         ]);
@@ -603,7 +672,7 @@ class Edit extends Component
         // But keep fallback just in case
         if (!empty($this->newMoments)) {
             foreach ($this->newMoments as $photo) {
-                $this->gallery['moments'][] = $this->processImage($photo, 1000);
+                $this->gallery['moments'][] = $this->processImage($photo, 1080);
             }
         }
 
