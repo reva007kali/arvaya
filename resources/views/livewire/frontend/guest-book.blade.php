@@ -64,7 +64,7 @@
 
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-1">
-                            <h4 class="font-bold theme-text text-lg">{{ $msg->sender_name }}</h4>
+                            <h4 class="font-bold theme-text text-md">{{ $msg->sender_name }}</h4>
                             <span class="text-[10px]">
                                 {{ $msg->created_at->diffForHumans() }}
                             </span>
