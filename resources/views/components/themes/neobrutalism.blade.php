@@ -204,6 +204,44 @@
             </div>
         @endif
 
+        {{-- ADMIN AUTO SCROLL --}}
+@auth
+    @if(auth()->user()->role === 'admin')
+        <div x-data="{
+            scrolling: false,
+            rafId: null,
+            speed: 8, // px per frame (~75 px/s at 60fps)
+            toggleScroll() {
+                this.scrolling ? this.stopScroll() : this.startScroll();
+            },
+            startScroll() {
+                this.scrolling = true;
+                const step = () => {
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 2) {
+                        this.stopScroll();
+                    } else {
+                        window.scrollBy(0, this.speed);
+                        this.rafId = requestAnimationFrame(step);
+                    }
+                };
+                this.rafId = requestAnimationFrame(step);
+            },
+            stopScroll() {
+                this.scrolling = false;
+                cancelAnimationFrame(this.rafId);
+            }
+        }"
+        class="fixed bottom-24 right-6 z-[995] print:hidden">
+            <button @click="toggleScroll"
+                class="w-8 h-8 bg-black text-[#FFE66D] border-[3px] border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] flex items-center justify-center hover:scale-110 transition-transform rounded-full"
+                :class="scrolling ? 'animate-pulse' : ''"
+                title="Auto Scroll (Admin Only)">
+                <i class="fa-solid" :class="scrolling ? 'fa-pause' : 'fa-arrow-down'"></i>
+            </button>
+        </div>
+    @endif
+@endauth
+
         {{-- 1. HERO SECTION --}}
         <section class="min-h-screen relative flex flex-col pt-10">
             <div class="absolute inset-0 bg-grid-pattern z-0 pointer-events-none"></div>
