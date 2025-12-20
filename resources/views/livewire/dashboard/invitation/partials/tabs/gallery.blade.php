@@ -126,7 +126,7 @@
                         Ukuran foto terlalu besar. Maksimal 10MB.
                     @else
                         Foto tidak dapat diupload, pastikan ukurannya tidak lebih dari 10MB.
-                        <a href="" class="text-[#D4AF37] text-[10px] font-bold underline">
+                        <a href="https://www.iloveimg.com/id/kompres-gambar" class="text-[#D4AF37] text-[10px] font-bold underline">
                             klik untuk kompres foto
                         </a>
                     @endif
