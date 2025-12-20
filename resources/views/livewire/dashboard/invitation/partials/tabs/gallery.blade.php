@@ -118,6 +118,22 @@
             @endif
         </div>
 
+        {{-- Error Message for Moments --}}
+        @error('newMoments.*')
+            <div class="text-center py-5 z-40">
+                <span class="inline-block bg-red-900/90 text-white text-[10px] font-bold px-3 py-1 rounded shadow-lg">
+                    @if(Str::contains($message, '10'))
+                        Ukuran foto terlalu besar. Maksimal 10MB.
+                    @else
+                        Foto tidak dapat diupload, pastikan ukurannya tidak lebih dari 10MB.
+                        <a href="" class="text-[#D4AF37] text-[10px] font-bold underline">
+                            klik untuk kompres foto
+                        </a>
+                    @endif
+                </span>
+            </div>
+        @enderror
+
         {{-- Condition: Empty State (Big Upload Box) --}}
         @if(count($gallery['moments'] ?? []) == 0)
             <div x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true"
@@ -175,34 +191,34 @@
         @if(count($gallery['moments'] ?? []) > 0)
             <div class="space-y-3">
                 <div class="space-y-3 max-w-xl mx-auto" x-data="{
-                                                            init() {
-                                                                let el = this.$refs.items;
+                        init() {
+                        let el = this.$refs.items;
 
-                                                                const initSortable = () => {
-                                                                    if (typeof Sortable === 'undefined') {
-                                                                        setTimeout(initSortable, 100);
-                                                                        return;
-                                                                    }
+                        const initSortable = () => {
+                        if (typeof Sortable === 'undefined') {
+                        setTimeout(initSortable, 100);
+                        return;
+                        }
 
-                                                                    let sortable = new Sortable(el, {
-                                                                        animation: 150,
-                                                                        delay: 0, 
-                                                                        handle: '.drag-handle',
-                                                                        forceFallback: true,
-                                                                        fallbackOnBody: true,
-                                                                        swapThreshold: 0.65,
-                                                                        ghostClass: 'sortable-ghost',
-                                                                        dragClass: 'sortable-drag',
-                                                                        onEnd: (evt) => {
-                                                                            let order = sortable.toArray(); 
-                                                                            $wire.reorderMoments(order);
-                                                                        }
-                                                                    });
-                                                                }
+                            let sortable = new Sortable(el, {
+                                animation: 150,
+                                delay: 0, 
+                                handle: '.drag-handle',
+                                forceFallback: true,
+                                fallbackOnBody: true,
+                                swapThreshold: 0.65,
+                                ghostClass: 'sortable-ghost',
+                                dragClass: 'sortable-drag',
+                                onEnd: (evt) => {
+                                    let order = sortable.toArray(); 
+                                    $wire.reorderMoments(order);
+                                        }
+                                          });
+                                            }
 
-                                                                initSortable();
-                                                            }
-                                                        }">
+                                             initSortable();
+                                                 }
+                                                    }">
                     {{-- Note: wire:ignore REMOVED to allow realtime updates --}}
                     <div x-ref="items" class="space-y-3">
                         @foreach ($gallery['moments'] as $index => $path)
