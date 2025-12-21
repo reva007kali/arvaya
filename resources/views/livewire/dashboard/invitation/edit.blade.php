@@ -84,7 +84,7 @@
             {{-- MENU NAVIGATION (Full Width on Mobile, Grid on Desktop) --}}
             <div class="lg:col-span-12">
                 <div>
-                    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-5">
+                    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
                         @php
                             $coupleLabel = match ($category) {
                                 'Birthday' => 'Profil',
@@ -109,6 +109,7 @@
                                 ['id' => 'theme', 'icon' => 'fa-palette', 'label' => 'Tema'],
                                 ['id' => 'music', 'icon' => 'fa-music', 'label' => 'Musik'],
                                 ['id' => 'dress_code', 'icon' => 'fa-shirt', 'label' => 'Dress Code'],
+                                ['id' => 'closing', 'icon' => 'fa-signature', 'label' => 'Kata Penutup'],
                             ];
                         @endphp
 
@@ -237,6 +238,11 @@
                         {{-- TAB: DRESS CODE --}}
                         @if ($activeTab === 'dress_code')
                             @include('livewire.dashboard.invitation.partials.tabs.dress-code')
+                        @endif
+
+                        {{-- TAB: CLOSING --}}
+                        @if ($activeTab === 'closing')
+                            @include('livewire.dashboard.invitation.partials.tabs.closing')
                         @endif
 
                     </div>

@@ -110,20 +110,3 @@
     </div>
 </div>
 
-<hr class="border-[#333333] border-dashed mb-8">
-
-{{-- Color Picker --}}
-<div class="bg-[#1a1a1a] p-6 rounded-3xl border border-[#333333] shadow-sm flex items-center gap-6">
-    <div class="relative w-20 h-20 rounded-2xl overflow-hidden shadow-inner ring-1 ring-[#333333]">
-        <input type="color" wire:model="theme.primary_color"
-            class="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] cursor-pointer p-0 border-0">
-    </div>
-    <div class="flex-1">
-        <label class="block text-xs font-bold text-[#A0A0A0] uppercase tracking-wider mb-2">Warna
-            Aksen Undangan</label>
-        <input type="text" wire:model="theme.primary_color"
-            class="w-full rounded-xl bg-[#252525] border border-[#333333] font-mono text-[#E0E0E0] uppercase focus:bg-[#2d2d2d] focus:border-[#D4AF37] focus:ring-[#D4AF37]">
-        <p class="text-[10px] text-[#888] mt-1">Digunakan untuk tombol, link, dan
-            dekorasi.</p>
-    </div>
-</div>

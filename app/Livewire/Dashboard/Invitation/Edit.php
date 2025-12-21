@@ -391,7 +391,7 @@ class Edit extends Component
 
         // Default Theme Config
         $this->theme = array_replace_recursive(
-            ['primary_color' => '#B89760', 'music_url' => ''],
+            ['music_url' => '', 'thank_you_message' => ''],
             $this->invitation->theme_config ?? []
         );
 

@@ -380,75 +380,76 @@
 
     {{-- 4. EVENT DETAILS --}}
     @if($invitation->events_enabled ?? true)
-    <section class="bg-cover bg-no-repeat bg-[url('/public/img/bg/paper2.png')]">
-        <div data-anim="fade-up" class="text-center p-8 text-2xl font-semibold mb-6">
-            <h1 class="uppercase underline">We Invite You to Join Our Wedding</h1>
-        </div>
-        <div class="mb-4 px-4">
-            <div class="relative">
-                <img class="mx-auto" src="{{ asset('img/assets/white-notebook.png') }}" alt="Notebook">
-                <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-full px-12">
-                    <div class="mb-4 font-bold text-center">
-                        <p data-anim="fade-up">{{ $event['title'] ?? 'The Wedding' }}</p>
-                    </div>
-                    <div data-anim="fade-up"
-                        class="text-center text-3xl opacity-75 theme-text font-title font-semibold mb-4 flex flex-col items-center">
-                        <h1>{{ $groom['nickname'] }}</h1>
-                        <span class="my-1">&</span>
-                        <h1>{{ $bride['nickname'] }}</h1>
-                    </div>
-                    @if($eventDate)
-                        <div class="flex font-semibold justify-center gap-4 text-[#5E4926] mb-4">
-                            <p data-anim="fade-up" class="font-serif text-lg">{{ $eventDate->translatedFormat('F') }}</p>
-                            <p data-anim="fade-up" class="font-serif text-lg">{{ $eventDate->translatedFormat('d') }}</p>
-                            <p data-anim="fade-up" class="font-serif text-lg">{{ $eventDate->translatedFormat('Y') }}</p>
+        <section class="bg-cover bg-no-repeat bg-[url('/public/img/bg/paper2.png')]">
+            <div data-anim="fade-up" class="text-center p-8 text-2xl font-semibold mb-6">
+                <h1 class="uppercase underline">We Invite You to Join Our Wedding</h1>
+            </div>
+            <div class="mb-4 px-4">
+                <div class="relative">
+                    <img class="mx-auto" src="{{ asset('img/assets/white-notebook.png') }}" alt="Notebook">
+                    <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-full px-12">
+                        <div class="mb-4 font-bold text-center">
+                            <p data-anim="fade-up">{{ $event['title'] ?? 'The Wedding' }}</p>
                         </div>
-                        <div data-anim="fade-up" class="text-center text-[#5E4926]">
-                            <p class="text-xs uppercase">Pukul</p>
-                            <p class="font-serif text-lg font-semibold">{{ $eventDate->format('H:i') }} {{ $event['timezone'] ?? 'WIB' }} - Selesai</p>
+                        <div data-anim="fade-up"
+                            class="text-center text-3xl opacity-75 theme-text font-title font-semibold mb-4 flex flex-col items-center">
+                            <h1>{{ $groom['nickname'] }}</h1>
+                            <span class="my-1">&</span>
+                            <h1>{{ $bride['nickname'] }}</h1>
                         </div>
-                    @endif
+                        @if($eventDate)
+                            <div class="flex font-semibold justify-center gap-4 text-[#5E4926] mb-4">
+                                <p data-anim="fade-up" class="font-serif text-lg">{{ $eventDate->translatedFormat('F') }}</p>
+                                <p data-anim="fade-up" class="font-serif text-lg">{{ $eventDate->translatedFormat('d') }}</p>
+                                <p data-anim="fade-up" class="font-serif text-lg">{{ $eventDate->translatedFormat('Y') }}</p>
+                            </div>
+                            <div data-anim="fade-up" class="text-center text-[#5E4926]">
+                                <p class="text-xs uppercase">Pukul</p>
+                                <p class="font-serif text-lg font-semibold">{{ $eventDate->format('H:i') }}
+                                    {{ $event['timezone'] ?? 'WIB' }} - Selesai</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
 
-        @if($eventDate)
-            <div x-data="countdown('{{ $eventDate->toIso8601String() }}')" x-init="start()"
-                class="flex gap-3 font-semibold justify-center text-center items-center text-sm mb-6 px-4">
-                <div data-anim="fade-up" data-delay="0.3s" class="p-2 bg-white/60 rounded w-16">
-                    <p class="text-xs">Hari</p>
-                    <span class="text-xl" x-text="days">0</span>
+            @if($eventDate)
+                <div x-data="countdown('{{ $eventDate->toIso8601String() }}')" x-init="start()"
+                    class="flex gap-3 font-semibold justify-center text-center items-center text-sm mb-6 px-4">
+                    <div data-anim="fade-up" data-delay="0.3s" class="p-2 bg-white/60 rounded w-16">
+                        <p class="text-xs">Hari</p>
+                        <span class="text-xl" x-text="days">0</span>
+                    </div>
+                    <div data-anim="fade-up" data-delay="0.5s" class="p-2 bg-white/60 rounded w-16">
+                        <p class="text-xs">Jam</p>
+                        <span class="text-xl" x-text="hours">0</span>
+                    </div>
+                    <div data-anim="fade-up" data-delay="0.7s" class="p-2 bg-white/60 rounded w-16">
+                        <p class="text-xs">Menit</p>
+                        <span class="text-xl" x-text="minutes">0</span>
+                    </div>
+                    <div data-anim="fade-up" data-delay="0.9s" class="p-2 bg-white/60 rounded w-16">
+                        <p class="text-xs">Detik</p>
+                        <span class="text-xl text-red-700" x-text="seconds">0</span>
+                    </div>
                 </div>
-                <div data-anim="fade-up" data-delay="0.5s" class="p-2 bg-white/60 rounded w-16">
-                    <p class="text-xs">Jam</p>
-                    <span class="text-xl" x-text="hours">0</span>
-                </div>
-                <div data-anim="fade-up" data-delay="0.7s" class="p-2 bg-white/60 rounded w-16">
-                    <p class="text-xs">Menit</p>
-                    <span class="text-xl" x-text="minutes">0</span>
-                </div>
-                <div data-anim="fade-up" data-delay="0.9s" class="p-2 bg-white/60 rounded w-16">
-                    <p class="text-xs">Detik</p>
-                    <span class="text-xl text-red-700" x-text="seconds">0</span>
-                </div>
-            </div>
-        @endif
-
-        <div class="px-8 text-center bg-white/70 py-8" data-anim="fade-up">
-            <p class="text-xl font-semibold mb-4">Lokasi Acara:</p>
-            <div class="mb-5">
-                <p class="font-bold text-[#5E4926] mb-1 text-lg">{{ $event['location'] ?? 'Lokasi Belum Ditentukan' }}
-                </p>
-                <p class="text-sm font-medium leading-relaxed text-gray-700">{{ $event['address'] ?? '' }}</p>
-            </div>
-            @if (!empty($event['map_link']))
-                <a href="{{ $event['map_link'] }}" target="_blank"
-                    class="inline-block px-8 py-3 bg-[#5E4926] text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#403013] transition shadow-lg theme-btn">
-                    <i class="fa-solid fa-location-arrow mr-2"></i> Google Maps
-                </a>
             @endif
-        </div>
-    </section>
+
+            <div class="px-8 text-center bg-white/70 py-8" data-anim="fade-up">
+                <p class="text-xl font-semibold mb-4">Lokasi Acara:</p>
+                <div class="mb-5">
+                    <p class="font-bold text-[#5E4926] mb-1 text-lg">{{ $event['location'] ?? 'Lokasi Belum Ditentukan' }}
+                    </p>
+                    <p class="text-sm font-medium leading-relaxed text-gray-700">{{ $event['address'] ?? '' }}</p>
+                </div>
+                @if (!empty($event['map_link']))
+                    <a href="{{ $event['map_link'] }}" target="_blank"
+                        class="inline-block px-8 py-3 bg-[#5E4926] text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#403013] transition shadow-lg theme-btn">
+                        <i class="fa-solid fa-location-arrow mr-2"></i> Google Maps
+                    </a>
+                @endif
+            </div>
+        </section>
     @endif
 
     {{-- 5. GALLERY SECTION --}}
@@ -572,8 +573,10 @@
     @if($isDressCodeEnabled)
         <section class="p-8 bg-cover bg-no-repeat bg-[url('/public/img/bg/paper2.png')]">
             <div data-anim="fade-up" class="text-center mb-8">
-                 <div class="py-4 mx-auto w-fit px-6 flex justify-center items-center text-center bg-contain p-2 bg-no-repeat bg-[url('/public/img/assets/masking-tape-red.png')]">
-                    <h1 class="font-serif font-semibold mt-3 text-white/80 text-xl uppercase">{{ $dressCode['title'] ?? 'Dress Code' }}</h1>
+                <div
+                    class="py-4 mx-auto w-fit px-6 flex justify-center items-center text-center bg-contain p-2 bg-no-repeat bg-[url('/public/img/assets/masking-tape-red.png')]">
+                    <h1 class="font-serif font-semibold text-white/80 text-xl uppercase">
+                        {{ $dressCode['title'] ?? 'Dress Code' }}</h1>
                 </div>
             </div>
 
@@ -584,19 +587,21 @@
                     <div class="flex flex-wrap justify-center gap-6 mb-10">
                         @foreach($dressCode['colors'] as $color)
                             <div class="flex flex-col items-center gap-2">
-                                <div class="w-10 h-10 rounded-full shadow-md border-2 border-white" style="background-color: {{ $color }}"></div>
+                                <div class="w-10 h-10 rounded-full shadow-md border-2 border-white"
+                                    style="background-color: {{ $color }}"></div>
                             </div>
                         @endforeach
                     </div>
                 @endif
 
                 @if(!empty($dressCode['image']))
-                    <div class="mb-10 p-3 bg-white shadow-lg rotate-1 transform hover:rotate-0 transition duration-500 rounded-sm">
+                    <div
+                        class="mb-10 p-3 bg-white shadow-lg rotate-1 transform hover:rotate-0 transition duration-500 rounded-sm">
                         <img src="{{ asset($dressCode['image']) }}" class="w-full object-cover">
                     </div>
                 @endif
 
-                 @if(!empty($dressCode['notes']))
+                @if(!empty($dressCode['notes']))
                     <div class="border-t border-b border-[#7C6339]/30 py-4 my-4">
                         <p class="font-serif italic text-[#7C6339] text-sm">
                             <span class="font-bold not-italic block mb-1">Note:</span>
@@ -614,28 +619,27 @@
         $hasGuestbook = $invitation->hasFeature('guestbook');
     @endphp
     @if($hasRsvp || $hasGuestbook)
-    <div class="shadow-2xl shadow-black/50 bg-[url('/public/img/bg/paper2.png')] pb-12">
-        @if($hasRsvp)
-            <div class="p-4 theme-scope" data-anim="fade-up">
-                @livewire('frontend.rsvp-form', ['invitation' => $invitation, 'guest' => $guest])
-            </div>
-        @endif
+        <div class="shadow-2xl shadow-black/50 bg-[url('/public/img/bg/paper2.png')] pb-12">
+            @if($hasRsvp)
+                <div class="p-4 theme-scope" data-anim="fade-up">
+                    @livewire('frontend.rsvp-form', ['invitation' => $invitation, 'guest' => $guest])
+                </div>
+            @endif
 
-        @if($hasRsvp && $hasGuestbook)
-            <div class="flex items-center gap-4 my-8 justify-center opacity-50">
-                <div class="h-px theme-bg w-16"></div>
-                <i class="fa-solid fa-heart theme-text"></i>
-                <div class="h-px theme-bg w-16"></div>
-            </div>
-        @endif
+            @if($hasRsvp && $hasGuestbook)
+                <div class="flex items-center gap-4 my-8 justify-center opacity-50">
+                    <div class="h-px theme-bg w-16"></div>
+                    <i class="fa-solid fa-heart theme-text"></i>
+                    <div class="h-px theme-bg w-16"></div>
+                </div>
+            @endif
 
-        @if($hasGuestbook)
-            <div class="p-4 bg-white/80 mx-4 rounded-xl"
-                data-anim="fade-up">
-                @livewire('frontend.guest-book', ['invitation' => $invitation, 'guest' => $guest])
-            </div>
-        @endif
-    </div>
+            @if($hasGuestbook)
+                <div class="p-4 bg-white/80 mx-4 rounded-xl" data-anim="fade-up">
+                    @livewire('frontend.guest-book', ['invitation' => $invitation, 'guest' => $guest])
+                </div>
+            @endif
+        </div>
     @endif
 
     {{-- 8. CLOSING / THANK YOU --}}

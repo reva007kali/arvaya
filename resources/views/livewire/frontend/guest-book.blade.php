@@ -8,7 +8,7 @@
                 <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 ml-1 theme-text">Nama Anda</label>
                 <div class="relative">
                     <input type="text" wire:model="sender_name"
-                        class="w-full pl-4 pr-4 py-3 rounded-xl border bg-white placeholder-[#C6AC80] focus:ring-1 transition-all text-sm font-medium"
+                        class="w-full pl-4 pr-4 py-3 rounded-xl border bg-white font-sans focus:ring-1 transition-all text-sm font-medium"
                         placeholder="Tulis nama lengkap..." {{ $guest ? 'readonly' : '' }}>
                     @if ($guest)
                         <div class="absolute right-3 top-3 text-[#B89760]" title="Terisi Otomatis dari Undangan">
@@ -22,7 +22,7 @@
                 <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 ml-1 theme-text">Ucapan &
                     Doa</label>
                 <textarea wire:model="content" rows="3"
-                    class="w-full p-4 rounded-xl bg-white border text-[#12110E] placeholder-[#C6AC80] focus:ring-1 transition-all text-sm resize-none"
+                    class="w-full p-4 rounded-xl bg-white border text-[#12110E] font-sans focus:ring-1 transition-all text-sm resize-none"
                     placeholder="Tuliskan harapan dan doa restu untuk kedua mempelai..."></textarea>
                 @error('content')
                     <span class="text-xs text-red-500 mt-1 block ml-1">{{ $message }}</span>
@@ -46,6 +46,8 @@
         </form>
     </div>
 
+    <div class="w-24 h-[1.2px] rounded-full mx-auto theme-bg"></div>
+
     {{-- LIST UCAPAN --}}
     <div id="guestbook-section" class="space-y-4 p-2">
         <h4 class="font-bold text-xl theme-text mb-4 text-center border-b pb-4 mx-auto">
@@ -55,34 +57,34 @@
         @foreach ($messages as $msg)
             <div class="relative transition">
 
-                <div class="flex gap-2 items-center relative z-10">
+                <div class="flex gap-2 items-start relative z-10 mb-2">
                     {{-- Avatar Inisial --}}
                     <div
-                        class="w-8 h-8 p-2 rounded-full theme-bg text-white  flex items-center justify-center font-bold text-lg shrink-0">
+                        class="w-8 h-8 p-2 rounded-full theme-bg text-white font-sans border border-white flex items-center justify-center font-bold text-lg shrink-0">
                         {{ substr($msg->sender_name, 0, 1) }}
                     </div>
 
                     <div class="flex-1">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-bold theme-text text-sm">{{ $msg->sender_name }}</h4>
-                            <span class="text-[10px]">
+                        <div class="flex font-sans justify-between items-center">
+                            <h4 class="font-bold theme-text text-sm mb-1">{{ $msg->sender_name }}</h4>
+                            <span class="text-[10px] created-at-text-color">
                                 {{ $msg->created_at->diffForHumans() }}
                             </span>
                         </div>
 
-                        <p class="text-xs w-fit bg-white p-2 rounded-md leading-relaxed font-medium">
+                        <p class="text-xs w-fit bg-white/80 p-2 rounded-md font-sans leading-relaxed font-medium">
                             {{ $msg->content }}
                         </p>
                     </div>
                 </div>
                 {{-- Balasan Mempelai (Reply) --}}
                 @foreach ($msg->replies as $reply)
-                    <div class="flex gap-2 items-center relative z-10">
+                    <div class="flex gap-2 items-start relative z-10">
                         <div class="flex-1">
                             <div class="flex justify-end items-center text-sm mt-2 ml-4">
                                 <h4 class="font-bold">{{ $reply->sender_name }}</h4>
                             </div>
-                            <div class="relative ml-auto w-fit text-right bg-white p-2 rounded-md border shadow-sm">
+                            <div class="relative ml-auto w-fit text-right bg-white/80 p-2 rounded-md border shadow-sm">
                                 <p class="text-xs  leading-relaxed font-medium">
                                     {{ $reply->content }}
                                 </p>

@@ -1,8 +1,4 @@
-<div class="p-2 shadow-[0_10px_40px_-10px_rgba(184,151,96,0.2)] relative overflow-hidden">
-
-    <h3 class="text-3xl font-bold mb-1 text-center theme-text">Konfirmasi Kehadiran</h3>
-    <p class="text-center text-[10px] font-bold uppercase tracking-[0.2em] mb-8">RSVP Form</p>
-
+<div class="p-2 relative overflow-hidden">
     @if ($isSubmitted)
         <div class="text-center py-8 animate-fade-in-up">
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 relative">
