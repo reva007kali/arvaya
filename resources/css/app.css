@@ -31,7 +31,7 @@
     --color-zinc-950: #0a0a0a;
 
     /* --- COLORS: ARVAYA (Theme Color) --- */
-    --color-arvaya-bg: #141414;
+    --color-arvaya-bg: #191919;
     --color-arvaya-50: #f9f7f2;
     --color-arvaya-100: #f0ebe0;
     --color-arvaya-200: #e2d6c0;
@@ -47,6 +47,19 @@
     /* --- COLORS: ROYAL --- */
     --color-royal-500: #1b4d3e;
     --color-royal-600: #143a2f;
+
+    /* navy color */
+    --color-navy-50: #f0f4f8;
+    --color-navy-100: #d9e2ec;
+    --color-navy-200: #bcccdc;
+    --color-navy-300: #9fb3c8;
+    --color-navy-400: #829ab1;
+    --color-navy-500: #627d98;
+    --color-navy-600: #486581;
+    --color-navy-700: #334e68;
+    --color-navy-800: #243b53;
+    --color-navy-900: #102a43;
+    --color-navy-950: #061523;
 
     /* --- COLORS: FLUX UI MAPPING --- */
     --color-accent: var(--color-arvaya-500);

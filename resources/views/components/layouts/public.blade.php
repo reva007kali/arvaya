@@ -28,9 +28,6 @@
     <!-- Font Awesome (Wajib untuk icon sosmed/navigasi di undangan) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    {{-- aos CDN --}}
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -55,7 +52,7 @@
                     <span
                         class="absolute -bottom-1 left-0 w-0 h-0.5 bg-arvaya-400 transition-all group-hover:w-full"></span>
                 </a>
-                <a href="#themes" class="hover:text-arvaya-400 transition relative group">
+                <a href="{{ route('templates.index') }}" wire:navigate class="hover:text-arvaya-400 transition relative group">
                     Tema
                     <span
                         class="absolute -bottom-1 left-0 w-0 h-0.5 bg-arvaya-400 transition-all group-hover:w-full"></span>
@@ -74,10 +71,6 @@
                         Dashboard
                     </a>
                 @else
-                    <a href="{{ route('login') }}"
-                        class="text-sm font-bold text-arvaya-400 hover:text-arvaya-200 transition hidden sm:block">
-                        Masuk
-                    </a>
                     <a href="{{ route('login') }}"
                         class="px-5 py-2.5 rounded-lg text-sm font-bold text-arvaya-bg bg-arvaya-400 hover:bg-arvaya-300 transition shadow-[4px_4px_10px_#0a0a0a,-4px_-4px_10px_#1e1e1e]">
                         Buat Undangan
@@ -134,16 +127,6 @@
             </div>
         </div>
     </footer>
-
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init({
-            once: true,
-            offset: 50,
-            duration: 800,
-            easing: 'ease-out-cubic',
-        });
-    </script>
 </body>
 
 <script>

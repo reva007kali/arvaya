@@ -152,17 +152,6 @@
                         </div>
                     </div>
 
-                    {{-- Preview URL --}}
-                    <div>
-                        <label class="block text-xs font-bold text-[#A0A0A0] uppercase mb-1">Preview URL (Sample Invitation)</label>
-                        <input type="text" wire:model="preview_url" placeholder="https://arvayadeaure.com/sample-wedding"
-                            class="w-full rounded-xl bg-[#252525] border-[#333333] text-[#E0E0E0] text-sm focus:border-[#D4AF37] focus:ring-[#D4AF37]">
-                        <p class="text-[10px] text-[#666] mt-1">Masukkan link undangan sample yang sudah dibuat admin.</p>
-                        @error('preview_url')
-                            <span class="text-red-500 text-xs">{{ $message }}</span>
-                        @enderror
-                    </div>
-
                     {{-- Description --}}
                     <div>
                         <label class="block text-xs font-bold text-[#A0A0A0] uppercase mb-1">Deskripsi Singkat</label>

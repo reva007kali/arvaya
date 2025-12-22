@@ -43,7 +43,7 @@
                 </p>
             </div>
 
-            <div class="flex gap-2">
+            <div class="flex items-center gap-2">
                 <a href="{{ route('invitation.show', $invitation->slug) }}" target="_blank"
                     class="px-4 py-2 bg-[#1a1a1a] border border-[#333333] text-[#E0E0E0] rounded-xl hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300 font-bold text-[10px] uppercase tracking-wide flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-eye"></i> Preview
@@ -52,8 +52,59 @@
                     class="px-4 py-2 text-center bg-[#1a1a1a] border border-[#333333] text-[#E0E0E0] rounded-xl hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300 font-bold text-[10px] uppercase tracking-wide flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-user-group"></i> Kelola Tamu
                 </a>
+                <div class="">
+                    @php
+                        $musicUrl = $invitation->theme_config['music_url'] ?? '';
+                        $isYoutube = $musicUrl && \Illuminate\Support\Str::contains($musicUrl, ['youtube.com', 'youtu.be']);
+                    @endphp
+                    @if($musicUrl)
+                        @if($isYoutube)
+                            <div x-data="youtubePlayer('{{ $musicUrl }}', false)" x-init="initPlayer()"
+                                class="">
+                                <button type="button"
+                                    class="px-4 py-2 bg-[#D4AF37] text-[#121212] rounded-full text-xs font-bold hover:bg-[#B4912F] transition shadow-lg"
+                                    @click="togglePlay">
+                                    <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play'"></i></button>
+                                <div class="hidden">
+                                    <div id="yt-player-container"></div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="">
+                                <button type="button"
+                                    class="px-4 py-2 bg-[#D4AF37] text-[#121212] rounded-full text-xs font-bold hover:bg-[#B4912F] transition shadow-lg"
+                                    onclick="const a=document.getElementById('inv-audio'); a.paused ? a.play() : a.pause();">
+                                    <i class="fa-solid fa-play"></i>
+                                </button>
+                                <audio id="inv-audio" src="{{ $musicUrl }}" preload="none"></audio>
+                            </div>
+                        @endif
+                    @endif
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-[#1a1a1a] p-4 rounded-xl border border-[#333333] text-center">
+                <p class="text-[9px] text-[#A0A0A0] uppercase">Dilihat</p>
+                <p class="text-lg font-bold text-[#D4AF37]">{{ $invitation->visit_count }}</p>
+            </div>
+            <div class="bg-[#1a1a1a] p-4 rounded-xl border border-[#333333] text-center">
+                <p class="text-[9px] text-[#A0A0A0] uppercase">Tamu</p>
+                <p class="text-lg font-bold text-[#D4AF37]">{{ $invitation->guests()->count() }}</p>
+            </div>
+            <div class="bg-[#1a1a1a] p-4 rounded-xl border border-[#333333] text-center">
+                <p class="text-[9px] text-[#A0A0A0] uppercase">Ucapan</p>
+                <p class="text-lg font-bold text-[#D4AF37]">{{ $invitation->messages()->count() }}</p>
+            </div>
+            <div class="bg-[#1a1a1a] p-4 rounded-xl border border-[#333333] text-center">
+                <p class="text-[9px] text-[#A0A0A0] uppercase">Template</p>
+                <p class="text-xs font-bold text-[#E0E0E0] uppercase">{{ $invitation->theme_template }}</p>
             </div>
         </div>
+
 
         {{-- ALERT --}}
         @if (session('message'))
@@ -116,7 +167,7 @@
                         @foreach ($menus as $menu)
                                             <button wire:click="openModal('{{ $menu['id'] }}')"
                                                 class="flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-300 border border-[#1a1a1a]
-                                                                                                                                                    {{ $activeTab === $menu['id']
+                                                                                                                                                                                                                {{ $activeTab === $menu['id']
                             ? 'bg-[#1a1a1a] text-arvaya-400 shadow-[inset_5px_5px_10px_#0d0d0d,inset_-5px_-5px_10px_#272727]'
                             : 'bg-[#1a1a1a] text-arvaya-400 shadow-[5px_5px_10px_#0d0d0d,-5px_-5px_10px_#272727] hover:text-[#D4AF37] hover:shadow-[inset_5px_5px_10px_#0d0d0d,inset_-5px_-5px_10px_#272727] hover:translate-y-0.5' }}">
                                                 <div class="text-xl transition-all duration-300 transform group-hover:scale-110">
@@ -160,13 +211,11 @@
                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
 
                 {{-- Modal Container --}}
-                <div
-                    class="relative w-full h-full flex flex-col overflow-hidden rounded-none">
+                <div class="relative w-full h-full flex flex-col overflow-hidden rounded-none">
 
                     {{-- Modal Header (Sticky) --}}
                     @if ($activeTab !== 'couple_quote')
-                        <div
-                            class="px-6 lg:px-20 py-4 bg-arvaya-bg flex justify-between items-center shrink-0 z-10 shadow-sm">
+                        <div class="px-6 lg:px-20 py-4 bg-arvaya-bg flex justify-between items-center shrink-0 z-10 shadow-sm">
                             <div class="flex items-center gap-3">
                                 @php
                                     $modalLabel = 'Edit';

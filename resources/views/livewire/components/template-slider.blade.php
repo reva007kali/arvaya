@@ -1,9 +1,9 @@
 <div class="relative w-full">
     {{-- Header & Filter --}}
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div>
-            <h2 class="font-serif text-3xl md:text-4xl font-bold text-arvaya-100">Koleksi Tema Eksklusif</h2>
-            <p class="text-arvaya-200 mt-2">Dekorasi undangan yang unik dan memukau untuk setiap acara.</p>
+        <div data-anim-stagger="0.2s">
+            <h2 data-anim="fade-up" class="font-serif text-3xl md:text-4xl font-bold text-arvaya-100">Koleksi Tema Eksklusif</h2>
+            <p data-anim="fade-up" class="text-arvaya-200 mt-2">Dekorasi undangan yang unik dan memukau untuk setiap acara.</p>
         </div>
     </div>
 

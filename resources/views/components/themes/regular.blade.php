@@ -568,12 +568,7 @@
     {{-- THANK YOU --}}
     <section class="py-24 bg-floral-texture text-center px-6">
         <h2 class="font-main text-xl text-[#333] uppercase tracking-[0.2em] mb-4">Thank You</h2>
-        
-        <p class="font-body text-sm text-[#666] mb-8 max-w-lg mx-auto italic">
-            {{ $invitation->theme_config['thank_you_message'] ?? 'Thank you for your prayers and blessings.' }}
-        </p>
-
-        <p class="font-script text-3xl text-[#666] mb-8">{{ $groom['nickname'] }} & {{ $bride['nickname'] }}</p>
+        <p class="font-script text-3xl text-[#666] mb-8">Xavier & Yuna</p>
         <p class="text-xs text-[#999] tracking-widest uppercase">Arvaya De Aure Premium Template</p>
     </section>
 

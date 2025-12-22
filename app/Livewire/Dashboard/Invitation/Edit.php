@@ -48,7 +48,6 @@ class Edit extends Component
         'groom' => null,
         'bride' => null,
         'moments' => [],
-        'enabled' => true, // <-- Toggle Global
     ];
 
     // Penampung file sementara (sebelum di-save)
@@ -56,16 +55,6 @@ class Edit extends Component
     public $newGroom;
     public $newBride;
     public $newMoments = [];
-
-    // --- DRESS CODE DATA ---
-    public $dressCode = [
-        'enabled' => false,
-        'description' => '',
-        'colors' => ['#ffffff', '#000000'],
-        'palette_image' => null,
-        'note' => '',
-    ];
-    public $newPaletteImage; // Upload handler
 
     // --- PROPERTI AI ---
     public $isGeneratingAi = false; // Loading state
@@ -379,19 +368,12 @@ class Edit extends Component
         // Default Events
         $this->events = $this->invitation->event_data ?? [];
         if (empty($this->events)) {
-            $this->events[] = [
-                'title' => 'Akad Nikah',
-                'date' => '',
-                'location' => '',
-                'address' => '',
-                'map_link' => '',
-                'timezone' => 'WIB', // Default timezone
-            ];
+            $this->events[] = ['title' => 'Akad Nikah', 'date' => '', 'location' => '', 'address' => '', 'map_link' => ''];
         }
 
         // Default Theme Config
         $this->theme = array_replace_recursive(
-            ['music_url' => '', 'thank_you_message' => ''],
+            ['primary_color' => '#B89760', 'music_url' => ''],
             $this->invitation->theme_config ?? []
         );
 
@@ -399,7 +381,7 @@ class Edit extends Component
         $this->gifts = $this->invitation->gifts_data ?? [];
 
         // Default Gallery
-        $defaultGallery = ['cover' => null, 'groom' => null, 'bride' => null, 'moments' => [], 'enabled' => true];
+        $defaultGallery = ['cover' => null, 'groom' => null, 'bride' => null, 'moments' => []];
         $dbGallery = $this->invitation->gallery_data ?? [];
 
         // Migrasi Data Lama (Jika gallery masih array biasa [0,1,2])
@@ -407,36 +389,6 @@ class Edit extends Component
             $this->gallery = array_merge($defaultGallery, ['moments' => $dbGallery]);
         } else {
             $this->gallery = array_replace_recursive($defaultGallery, $dbGallery);
-        }
-
-        // Default Dress Code
-        $defaultDressCode = [
-            'enabled' => false,
-            'description' => '',
-            'colors' => ['#000000', '#FFFFFF'],
-            'palette_image' => null,
-            'note' => '',
-        ];
-        $this->dressCode = array_replace_recursive($defaultDressCode, $this->invitation->dress_code_data ?? []);
-
-        // Default Events Enabled Toggle (jika belum ada)
-        // Kita tidak bisa replace recursive langsung karena events adalah array of objects
-        // Jadi kita simpan state toggle global di theme_config atau buat wrapper baru?
-        // Simpelnya: tambahkan key 'events_enabled' di theme_config
-        if (!isset($this->theme['events_enabled'])) {
-            $this->theme['events_enabled'] = true;
-        }
-        if (!isset($this->theme['gifts_enabled'])) {
-            $this->theme['gifts_enabled'] = true;
-        }
-        if (!isset($this->theme['rsvp_enabled'])) {
-            $this->theme['rsvp_enabled'] = true;
-        }
-        if (!isset($this->theme['guest_book_enabled'])) {
-            $this->theme['guest_book_enabled'] = true;
-        }
-        if (!isset($this->theme['quote_enabled'])) {
-            $this->theme['quote_enabled'] = true;
         }
     }
 
@@ -548,14 +500,7 @@ class Edit extends Component
 
     public function addEvent()
     {
-        $this->events[] = [
-            'title' => '',
-            'date' => '',
-            'location' => '',
-            'address' => '',
-            'map_link' => '',
-            'timezone' => 'WIB'
-        ];
+        $this->events[] = ['title' => 'Acara Baru', 'date' => '', 'location' => '', 'address' => '', 'map_link' => ''];
     }
 
     public function removeEvent($index)
@@ -644,8 +589,8 @@ class Edit extends Component
             // Reset property
             $this->reset($propertyName);
 
-            // Dispatch Error Notification
-            $this->dispatch('notify', message: 'Ukuran foto terlalu besar (>10MB). Harap kompres foto Anda.', type: 'error');
+            // Dispatch Error Modal
+            $this->dispatch('show-upload-error-modal');
             return false;
         }
         return true;
@@ -656,13 +601,6 @@ class Edit extends Component
     {
         if ($this->checkFileSizeStrict($this->newCover, 'newCover')) {
             $this->validate(['newCover' => 'image|max:10240']);
-        }
-    }
-
-    public function updatedNewPaletteImage()
-    {
-        if ($this->checkFileSizeStrict($this->newPaletteImage, 'newPaletteImage')) {
-            $this->validate(['newPaletteImage' => 'image|max:5120']); // 5MB max for palette
         }
     }
 
@@ -696,7 +634,7 @@ class Edit extends Component
 
         if ($hasError) {
             $this->newMoments = $validPhotos; // Keep only valid ones
-            $this->dispatch('notify', message: 'Beberapa foto gagal diupload karena >10MB.', type: 'error');
+            $this->dispatch('show-upload-error-modal');
         }
 
         $this->validate([
@@ -717,18 +655,6 @@ class Edit extends Component
         $this->dispatch('notify', message: 'Foto berhasil disimpan otomatis!', type: 'success');
     }
 
-    // --- DRESS CODE HELPERS ---
-    public function addDressCodeColor()
-    {
-        $this->dressCode['colors'][] = '#000000';
-    }
-
-    public function removeDressCodeColor($index)
-    {
-        unset($this->dressCode['colors'][$index]);
-        $this->dressCode['colors'] = array_values($this->dressCode['colors']);
-    }
-
     // --- MAIN ACTION: SAVE ---
     public function save()
     {
@@ -741,11 +667,6 @@ class Edit extends Component
             $this->gallery['groom'] = $this->processImage($this->newGroom, 800);
         if ($this->newBride)
             $this->gallery['bride'] = $this->processImage($this->newBride, 800);
-        
-        // Dress Code Palette
-        if ($this->newPaletteImage) {
-            $this->dressCode['palette_image'] = $this->processImage($this->newPaletteImage, 800);
-        }
 
         // Note: newMoments processed automatically in updatedNewMoments
         // But keep fallback just in case
@@ -762,10 +683,6 @@ class Edit extends Component
         // Fallback jika template tidak ditemukan (sangat jarang terjadi)
         $packageType = $selectedTemplate ? $selectedTemplate->tier : 'basic';
         $amount = $selectedTemplate ? $selectedTemplate->price : 0;
-        
-        // Duration Logic
-        $durationMonths = Invitation::PACKAGES[$packageType]['duration_months'] ?? 3;
-        $expiresAt = $durationMonths ? now()->addMonths($durationMonths) : null; // Null means forever (Exclusive)
 
         // 2.a HANDLE UPGRADE/DOWNGRADE
         $paymentAction = null;
@@ -791,25 +708,6 @@ class Edit extends Component
             $refundAmount = $previousAmount - $amount;
             // Tetap paid (admin bisa proses refund manual), undangan tetap aktif
         }
-        
-        // Jika status PAID (atau akan tetap paid), update expired date
-        // Namun, jika upgrade (jadi unpaid), expired date jangan diupdate dulu sampai lunas?
-        // Untuk simplifikasi MVP: Kita update expires_at jika status == paid atau saat ini unpaid (baru beli)
-        $isActive = $this->invitation->is_active;
-        
-        // Logic Expiration saat Save:
-        // Idealnya expires_at dihitung saat pembayaran sukses (Webhook).
-        // Tapi jika ini adalah save data biasa dan undangan sudah aktif, kita mungkin tidak perlu ubah expires_at
-        // KECUALI jika upgrade tier.
-        // Untuk sekarang, kita simpan 'expires_at' HANYA jika belum ada, atau jika upgrade terjadi.
-        // Tapi user minta: "Basic 3 bulan, Premium 6 bulan".
-        // Asumsi: Saat user create/edit dan pilih template, masa aktif mengikuti tier TERBARU.
-        if ($previousStatus === 'paid' && $paymentAction !== 'upgraded') {
-             // Jika sudah bayar dan tidak upgrade, jangan ubah expires_at sembarangan, 
-             // KECUALI jika logic bisnis mengharuskan reset durasi saat ganti template (jarang).
-             // Kita biarkan expires_at lama.
-             $expiresAt = $this->invitation->expires_at; 
-        }
 
         // 3. UPDATE DATABASE
         $this->invitation->update([
@@ -823,23 +721,17 @@ class Edit extends Component
             'refund_amount' => $refundAmount,
             'payment_status' => $this->invitation->payment_status,
             'is_active' => $this->invitation->is_active,
-            
-            // Expiration
-            // 'expires_at' => $expiresAt, // Dihandle payment gateway sebaiknya, tapi kita siapkan datanya jika unpaid
-            // Jika unpaid, kita set null dulu, nanti diaktifkan saat bayar.
-            // Jika paid, biarkan.
-            
+
             // Update Data JSON
             'couple_data' => $this->couple,
             'event_data' => $this->events,
             'theme_config' => $this->theme,
             'gallery_data' => $this->gallery,
             'gifts_data' => $this->gifts,
-            'dress_code_data' => $this->dressCode,
         ]);
 
         // 4. BERSIHKAN
-        $this->reset(['newCover', 'newGroom', 'newBride', 'newMoments', 'newPaletteImage']);
+        $this->reset(['newCover', 'newGroom', 'newBride', 'newMoments']);
 
         session()->flash('message', 'Perubahan disimpan! Paket & Harga disesuaikan dengan template.');
         $this->modalOpen = false;

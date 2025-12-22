@@ -26,7 +26,7 @@
 </head>
 
 
-<body class="antialiased bg-black">
+<body class="antialiased">
 
 
     {{ $slot }}

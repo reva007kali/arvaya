@@ -7,10 +7,22 @@ use Illuminate\Support\Facades\Auth;
 
 class Index extends Component
 {
+    public $search = '';
+
     public function render()
     {
+        $query = Auth::user()->invitations()->latest();
+
+        if ($this->search !== '') {
+            $s = $this->search;
+            $query = $query->where(function ($q) use ($s) {
+                $q->where('title', 'like', "%{$s}%")
+                    ->orWhere('slug', 'like', "%{$s}%");
+            });
+        }
+
         return view('livewire.dashboard.index', [
-            'invitations' => Auth::user()->invitations()->latest()->get()
+            'invitations' => $query->get()
         ]);
     }
 
