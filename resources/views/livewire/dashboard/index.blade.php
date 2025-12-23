@@ -1,4 +1,4 @@
-<div class="py-2 animate-fade-in-up dashboard-ui">
+<div class="pt-4 pb-10 animate-fade-in-up dashboard-ui">
 
     {{-- PROMOTIONAL BANNER (SWIPER) --}}
     <div class="mb-10 overflow-hidden relative group">
@@ -100,7 +100,7 @@
     </div>
     {{-- SEARCH BAR --}}
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
         @forelse($invitations as $invitation)
             @php
                 $event = $invitation->event_data[0] ?? [];
@@ -113,7 +113,7 @@
             <div class="relative">
                 <a href="{{ route('dashboard.invitation.edit', $invitation->id) }}"
                     class="block rounded-2xl border-2 border-[#333333] bg-[#1a1a1a] overflow-hidden shadow-xl hover:shadow-2xl transition">
-                    <div class="h-40 relative bg-cover bg-center" style="background-image: url('{{ $coverImage }}')">
+                    <div class="aspect-square object-cover relative bg-cover bg-center" style="background-image: url('{{ $coverImage }}')">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
                         <div
                             class="absolute top-0 left-0 px-4 py-1 bg-arvaya-500/50 backdrop-blur-sm text-[10px] text-white uppercase tracking-wider rounded-br-full">
@@ -122,11 +122,11 @@
                         <div class="absolute top-0 right-0">
                             <span class="px-2 py-1 rounded-full text-[10px] font-bold
                                 @if ($invitation->payment_status === 'paid')
-                                    bg-green-900/20 text-green-500 border border-green-900/30
+                                    bg-green-900/40 text-green-500 border border-green-900/30
                                 @elseif ($invitation->payment_status === 'pending')
-                                    bg-yellow-900/20 text-yellow-500 border border-yellow-900/30
+                                    bg-yellow-900/40 text-yellow-500 border border-yellow-900/30
                                 @elseif ($invitation->payment_status === 'rejected')
-                                    bg-red-900/20 text-red-500 border border-red-900/30
+                                    bg-red-900/40 text-red-500 border border-red-900/30
                                 @else
                                     bg-[#252525] text-[#E0E0E0] border border-[#333333]
                                 @endif">
@@ -145,7 +145,7 @@
                     </div>
                 </a>
                 <button type="button" wire:click.stop="startEdit({{ $invitation->id }})"
-                    class="absolute bottom-2 left-2 px-2 py-1 rounded-lg bg-[#252525] text-[#E0E0E0] border border-[#333333] text-[10px] font-bold hover:bg-[#333] transition z-10"
+                    class="absolute top-10 right-2 px-2 py-1 rounded-lg bg-[#252525] text-[#E0E0E0] border border-[#333333] text-[10px] font-bold hover:bg-[#333] transition z-10"
                     title="Edit Judul & Slug">
                     <i class="fa-solid fa-pen"></i>
                 </button>
