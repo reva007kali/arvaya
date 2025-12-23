@@ -32,12 +32,14 @@ use App\Livewire\Frontend\TemplateShowcase;
 | Web Routes
 |--------------------------------------------------------------------------
 */
+Route::middleware(['cacheResponse:3600'])->group(function () {
 
-// 1. LANDING PAGE UTAMA (Halaman depan aplikasi SaaS kamu)
-Route::middleware(['cacheResponse:3600'])->get('/', LandingPage::class)->name('home');
+    // 1. LANDING PAGE UTAMA (Halaman depan aplikasi SaaS kamu)
+    Route::get('/', LandingPage::class)->name('home');
+});
 
 // 2. TEMPLATE SHOWCASE (Public)
-Route::middleware(['cacheResponse:3600'])->get('/templates', TemplateShowcase::class)->name('templates.index');
+Route::get('/templates', TemplateShowcase::class)->name('templates.index');
 
 Route::get('/invitation/inactive', function () {
     return view('errors.invitation-inactive');
