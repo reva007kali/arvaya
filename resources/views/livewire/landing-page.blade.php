@@ -305,45 +305,6 @@
         </div>
     </section>
 
-    <!-- TESTIMONIALS (Clean) -->
-    <section id="testimonials" class="py-24 bg-arvaya-bg border-t border-white/5 overflow-hidden">
-        <div class="max-w-6xl mx-auto px-6 mb-12 text-center">
-            <h2 class="font-serif text-3xl font-bold text-arvaya-100">Cerita Bahagia</h2>
-        </div>
-
-        <div class="relative w-full py-6 overflow-hidden mask-gradient-x">
-            <div class="flex animate-marquee gap-8 w-max hover:[animation-play-state:paused]">
-                <!-- Loop Items -->
-                @foreach([1, 2, 3, 4] as $i)
-                    <div
-                        class="w-[400px] p-8 bg-arvaya-bg rounded-2xl shadow-[5px_5px_10px_#0a0a0a,-5px_-5px_10px_#1e1e1e]">
-                        <div class="flex text-arvaya-400 mb-4 text-xs gap-1">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                        </div>
-                        <p class="text-arvaya-200 text-sm mb-6 leading-relaxed italic">
-                            "Platform undangan digital terbaik yang pernah saya coba. Desainnya elegan, tidak norak, dan
-                            fiturnya sangat membantu."
-                        </p>
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="w-10 h-10 rounded-full bg-arvaya-bg shadow-[inset_2px_2px_5px_#0a0a0a,inset_-2px_-2px_5px_#1e1e1e] flex items-center justify-center text-arvaya-400 font-bold text-xs">
-                                {{ substr(['Sarah', 'Raka', 'Andi', 'Bella'][$i - 1], 0, 1) }}
-                            </div>
-                            <div>
-                                <div class="text-sm font-bold text-arvaya-100">
-                                    {{ ['Sarah & Dimas', 'Raka & Bella', 'Andi & Citra', 'Dina & Budi'][$i - 1] }}
-                                </div>
-                                <div class="text-xs text-arvaya-500">Jakarta</div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
     <!-- FLOATING WHATSAPP (Neomorphism) -->
     <a href="https://wa.me/6282260894009" target="_blank"
         class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full transition-transform hover:scale-110 active:scale-95 shadow-[5px_5px_15px_#0a0a0a,-5px_-5px_15px_#1e1e1e]">

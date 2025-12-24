@@ -106,6 +106,16 @@
                         @enderror
                     </div>
 
+                    {{-- Preview URL --}}
+                    <div>
+                        <label class="block text-xs font-bold text-[#A0A0A0] uppercase mb-1">Preview URL (Optional)</label>
+                        <input type="text" wire:model="preview_url" placeholder="https://..."
+                            class="w-full rounded-xl bg-[#252525] border-[#333333] text-[#E0E0E0] text-sm focus:border-[#D4AF37] focus:ring-[#D4AF37]">
+                        @error('preview_url')
+                            <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
                     {{-- Type & Price Row --}}
                     <div class="grid grid-cols-3 gap-4">
                         {{-- Type --}}
@@ -165,9 +175,17 @@
                             (Potrait)</label>
                         <input type="file" wire:model="thumbnail"
                             class="block w-full text-sm text-[#888] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#333] file:text-[#D4AF37] hover:file:bg-[#444]">
+                        
+                        {{-- Image Preview Logic --}}
                         @if ($thumbnail)
-                            <img src="{{ $thumbnail->temporaryUrl() }}" class="h-20 mt-2 rounded border border-[#333]">
+                            <img src="{{ $thumbnail->temporaryUrl() }}" class="h-20 mt-2 rounded border border-[#333] object-cover">
+                        @elseif($isEdit && $oldThumbnail)
+                            <div class="mt-2">
+                                <p class="text-[10px] text-[#666] mb-1">Current Image:</p>
+                                <img src="{{ asset('storage/' . $oldThumbnail) }}" class="h-20 rounded border border-[#333] object-cover">
+                            </div>
                         @endif
+
                         @error('thumbnail')
                             <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror

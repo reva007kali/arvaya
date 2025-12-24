@@ -127,4 +127,5 @@ Route::middleware(['auth'])->group(function () {
 // jadi tidak perlu didefinisikan di sini.
 Route::get('/{slug}', ShowInvitation::class)
     ->where('slug', '[a-zA-Z0-9\-]+')
+    ->middleware('cacheResponse:604800') // Cache 1 week (using Spatie ResponseCache)
     ->name('invitation.show');

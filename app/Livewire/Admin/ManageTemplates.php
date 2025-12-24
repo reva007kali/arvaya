@@ -7,6 +7,9 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use App\Models\Template;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Str;
 
 class ManageTemplates extends Component
 {
@@ -18,6 +21,8 @@ class ManageTemplates extends Component
     public $name, $slug, $description, $tier = 'basic';
     public $price = 0; // Tambahan: Harga Template
     public $thumbnail, $preview_video;
+    public $preview_url; // New Input
+    public $oldThumbnail; // For Preview in Edit Mode
     public $templateId = null;
     public $is_active = true;
     public $category = 'Wedding';
@@ -28,7 +33,9 @@ class ManageTemplates extends Component
 
     public function render()
     {
-        $this->templates = Template::latest()->get();
+        $this->templates = Template::select(['id', 'name', 'slug', 'thumbnail', 'tier', 'price', 'category', 'is_active'])
+            ->latest()
+            ->get();
         return view('livewire.admin.manage-templates');
     }
 
@@ -36,7 +43,7 @@ class ManageTemplates extends Component
     {
         $this->resetValidation();
         // Reset form inputs termasuk price
-        $this->reset(['name', 'slug', 'description', 'tier', 'price', 'thumbnail', 'preview_video', 'templateId', 'is_active', 'category']);
+        $this->reset(['name', 'slug', 'description', 'tier', 'price', 'thumbnail', 'preview_video', 'preview_url', 'templateId', 'is_active', 'category', 'oldThumbnail']);
         $this->isOpen = true;
         $this->isEdit = false;
     }
@@ -51,8 +58,10 @@ class ManageTemplates extends Component
         $this->description = $t->description;
         $this->tier = $t->tier;
         $this->price = $t->price; // Load harga
+        $this->preview_url = $t->preview_url; // Load Preview URL
         $this->is_active = (bool) $t->is_active;
         $this->category = $t->category ?: 'Wedding';
+        $this->oldThumbnail = $t->thumbnail; // Store existing thumbnail path
 
         $this->isOpen = true;
         $this->isEdit = true;
@@ -67,10 +76,11 @@ class ManageTemplates extends Component
             'price' => 'required|numeric|min:0', // Validasi harga
             'is_active' => 'boolean',
             'category' => 'nullable|string|in:Wedding,Engagement,Birthday,Aqiqah,Khitan,Event,Other',
+            'preview_url' => 'nullable|url',
         ];
 
         if (!$this->isEdit) {
-            $rules['thumbnail'] = 'required|image|max:2048';
+            $rules['thumbnail'] = 'required|image|max:5120'; // Allow up to 5MB, we will compress it
         }
 
         $this->validate($rules);
@@ -81,12 +91,29 @@ class ManageTemplates extends Component
             'description' => $this->description,
             'tier' => $this->tier,
             'price' => $this->price, // Simpan harga
+            'preview_url' => $this->preview_url,
             'is_active' => (bool) $this->is_active,
             'category' => $this->category,
         ];
 
         if ($this->thumbnail) {
-            $data['thumbnail'] = $this->thumbnail->store('templates/thumbnails', 'public');
+            // COMPRESSION LOGIC (Intervention Image v3)
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($this->thumbnail->getRealPath());
+            
+            // Resize to max width 800px, maintain aspect ratio
+            $image->scale(width: 800);
+            
+            // Encode to WebP with 80% quality
+            $encoded = $image->toWebp(quality: 80);
+            
+            // Generate Filename
+            $filename = 'templates/thumbnails/' . Str::random(40) . '.webp';
+            
+            // Store to Public Disk
+            Storage::disk('public')->put($filename, (string) $encoded);
+            
+            $data['thumbnail'] = $filename;
         }
 
         if ($this->preview_video) {

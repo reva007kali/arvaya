@@ -17,7 +17,7 @@ class Index extends Component
 
     public function render()
     {
-        $query = Auth::user()->invitations()->latest();
+        $query = Auth::user()->invitations()->with(['template'])->withCount('guests')->latest();
 
         if ($this->search !== '') {
             $s = $this->search;

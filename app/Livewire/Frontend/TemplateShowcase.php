@@ -48,7 +48,8 @@ class TemplateShowcase extends Component
 
     public function render()
     {
-        $query = Template::where('is_active', true);
+        $query = Template::select(['id', 'name', 'slug', 'thumbnail', 'tier', 'price', 'category', 'preview_url'])
+            ->where('is_active', true);
 
         // Search Filter
         if ($this->search) {

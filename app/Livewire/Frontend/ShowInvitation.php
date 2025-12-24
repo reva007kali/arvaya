@@ -44,7 +44,17 @@ class ShowInvitation extends Component
         }
         // ----------------------------------------
 
-        $this->invitation->increment('visit_count');
+        // Optimasi Visit Count (Cache Lock / Session)
+        // Gunakan Cache Lock agar atomic dan lebih ringan daripada Session Write setiap request
+        $ip = request()->ip();
+        $cacheKey = "visit_lock_{$this->invitation->id}_{$ip}";
+        
+        // Cache selama 1 jam (3600 detik) untuk IP ini
+        if (cache()->add($cacheKey, true, 3600)) {
+            // Jika berhasil add (berarti belum ada key), baru increment DB
+            // Gunakan query builder langsung agar lebih ringan (bypass model event/serialization jika ada)
+            Invitation::where('id', $this->invitation->id)->increment('visit_count');
+        }
 
         if ($this->guestSlug) {
             $this->guest = $this->invitation->guests()

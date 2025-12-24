@@ -24,7 +24,7 @@ class ManageInvitation extends Component
 
     public function render()
     {
-        $invitations = Invitation::with('user') // Eager load user
+        $invitations = Invitation::with(['user', 'template'])->withCount('guests') // Eager load user & template, count guests
             ->whereHas('user', function ($q) {
                 $q->where('role', '!=', 'admin');
             })
